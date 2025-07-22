@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Gestión de Inventario</title>
+    <link rel="stylesheet" href="inventario.css" />
+</head>
+<body class="contenedor-principal">
+
+    <!-- Barra de navegación -->
+    <nav class="barra-navegacion">
+        <ul>
+            <li><a href="indexadmin.html" class="activo">Inicio</a></li>
+            <li><a href="usuarios.html">Administración de Clientes</a></li>
+            <li><a href="pagos.html">Administración de Pagos</a></li>
+            <li><a href="inventario.html" class="activo">Gestión de Inventario</a></li>
+            
+
+        </ul>
+    </nav>
+
+    <!-- Cabecera -->
+    <header class="cabecera">
+        <img src="vaguettoslogo.jpg" alt="Logo Vaguettos" class="logo-cabecera" />
+        <h1 class="titulo-principal">Gestión de Inventario</h1>
+    </header>
+
+    <!-- Formulario -->
+    <main class="contenido-principal">
+        <form class="formulario-producto">
+            <div class="fila-formulario">
+                <input type="text" placeholder="Ingrese código del producto" />
+                <input type="text" placeholder="Ingrese modelo del producto" />
+                <button type="button" class="btn secundario">Editar</button>
+            </div>
+            <div class="fila-formulario">
+                <input type="number" placeholder="Ingrese stock" />
+                <input type="text" placeholder="Ingrese precio" />
+                <button type="button" class="btn secundario">Agregar</button>
+            </div>
+            <div class="fila-formulario">
+                <input type="date" />
+                <button type="button" class="btn secundario">Enviar</button>
+            </div>
+
+            <textarea placeholder="Descripción del producto..."></textarea>
+            <button type="submit" class="btn primario">Guardar</button>
+        </form>
+
+        <!-- Tabla sin productos (se llenará dinámicamente) -->
+        <section class="seccion-tabla">
+            <h2>Productos</h2>
+            <table class="tabla-inventario">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Fecha</th>
+                        <th>Disponibilidad</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-tabla">
+                    
+                </tbody>
+            </table>
+
+            <div class="paginacion">
+                <button class="btn secundario">Regresar</button>
+                <span>Página 1 de 10</span>
+                <button class="btn secundario">Siguiente</button>
+            </div>
+        </section>
+
+        <button class="btn rojo salir">Salir</button>
+    </main>
+</body>
+</html>

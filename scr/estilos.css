@@ -1,0 +1,199 @@
+/* pagosestilos.css */
+
+/* Paleta de colores */
+:root {
+    --color-principal: #071739;
+    --fondo-claro: #f5f6fa;
+    --texto-oscuro: #071739;
+    --texto-blanco: #ffffff;
+    --verde: #2ecc71;
+    --rojo: #e74c3c;
+    --azul-claro: #3498db;
+}
+
+/* Base */
+body,
+.contenedor-principal {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--fondo-claro);
+    color: var(--texto-oscuro);
+}
+
+/* Cabecera */
+.cabecera {
+    background-color: var(--color-principal);
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #ddd;
+}
+
+.logo-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.titulo-principal {
+    font-size: 32px;
+    margin: 0;
+    color: var(--texto-blanco);
+}
+
+/* Contenido */
+.contenido-principal {
+    padding: 30px;
+}
+
+/* Secciones */
+.seccion-busqueda,
+.seccion-tabla {
+    margin-bottom: 30px;
+}
+
+/* Títulos */
+.titulo-seccion {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: var(--color-principal);
+}
+
+/* Inputs */
+.campo-busqueda,
+input,
+textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    background-color: #fff;
+    color: var(--texto-oscuro);
+}
+
+/* Textarea */
+textarea {
+    height: 100px;
+    resize: none;
+}
+
+/* Tabla */
+.contenedor-tabla {
+    overflow-x: auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px #0001;
+}
+
+.tabla-pagos,
+.tabla-clientes {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--texto-oscuro);
+}
+
+.tabla-cabecera {
+    background-color: #f0f0f0;
+}
+
+.fila-cabecera th,
+.cuerpo-tabla td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+}
+
+/* Colores de estado */
+.verde {
+    color: var(--verde);
+}
+
+.rojo {
+    color: var(--rojo);
+}
+
+.amarillo {
+    color: var(--azul-claro);
+}
+
+/* Botones */
+button,
+.btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--texto-blanco);
+    font-weight: bold;
+}
+
+.imprimir-btn {
+    background-color: var(--azul-claro);
+}
+
+.editar-btn {
+    background-color: var(--verde);
+}
+
+.eliminar-btn {
+    background-color: var(--rojo);
+}
+
+.primario {
+    background-color: var(--color-principal);
+}
+
+.secundario {
+    background-color: #0d1b3f;
+}
+
+.salir {
+    display: block;
+    margin: 40px auto 0;
+    background-color: var(--rojo);
+}
+
+/* Barra de navegación */
+.barra-navegacion {
+    background-color: var(--color-principal);
+    padding: 10px 0;
+    border-bottom: 2px solid #ffffff22;
+}
+
+.barra-navegacion ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.barra-navegacion a {
+    color: var(--texto-blanco);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.barra-navegacion a:hover,
+.barra-navegacion .activo {
+    background-color: #1a2a4a;
+}

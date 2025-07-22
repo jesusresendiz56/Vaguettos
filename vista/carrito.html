@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carrito de Compras</title>
+  <link rel="stylesheet" href="../scr/carrito.css" />
+</head>
+<body>
+  <h1>prototipo carrito</h1>
+
+  <div class="productos">
+    <div class="producto">
+      <h3>Producto 1</h3>
+      <p>$10</p>
+      <button onclick="agregarAlCarrito('Producto 1', 10)">Agregar</button>
+    </div>
+    <div class="producto">
+      <h3>Producto 2</h3>
+      <p>$20</p>
+      <button onclick="agregarAlCarrito('Producto 2', 20)">Agregar</button>
+    </div>
+    <div class="producto">
+      <h3>Producto 3</h3>
+      <p>$15</p>
+      <button onclick="agregarAlCarrito('Producto 3', 15)">Agregar</button>
+    </div>
+  </div>
+
+  <h2>Carrito</h2>
+  <ul id="carrito"></ul>
+  <p>Total: $<span id="total">0</span></p>
+
+  <script>
+    let carrito = [];
+    let total = 0;
+
+    function agregarAlCarrito(nombre, precio) {
+      carrito.push({ nombre, precio });
+      total += precio;
+      actualizarCarrito();
+    }
+
+    function actualizarCarrito() {
+      const lista = document.getElementById('carrito');
+      const totalElemento = document.getElementById('total');
+
+      lista.innerHTML = '';
+      carrito.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.nombre} - $${item.precio}`;
+        lista.appendChild(li);
+      });
+
+      totalElemento.textContent = total;
+    }
+  </script>
+</body>
+</html>

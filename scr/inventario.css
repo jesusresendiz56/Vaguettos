@@ -1,0 +1,203 @@
+/* inventario.css */
+
+/* Colores */
+:root {
+    --color-principal: #071739;
+    --fondo-claro: #f9f9f9;
+    --texto-oscuro: #071739;
+    --texto-blanco: #ffffff;
+    --verde: #2ecc71;
+    --rojo: #e74c3c;
+    --azul-claro: #3498db;
+    --azul-btn: #0d1b3f;
+}
+
+/* Base */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--fondo-claro);
+    color: var(--texto-oscuro);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Contenedor */
+.contenedor-principal {
+    width: 95%;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #071739;
+    border-radius: 12px;
+    box-shadow: 0 0 10px #00000015;
+}
+
+/* Cabecera */
+.cabecera {
+    background-color: var(--color-principal);
+    padding: 20px;
+    text-align: center;
+    border-radius: 0 0 10px 10px;
+}
+
+.logo-cabecera {
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.titulo-principal {
+    font-size: 28px;
+    color: var(--texto-blanco);
+    margin: 0;
+}
+
+/* Barra de navegación */
+.barra-navegacion {
+    background-color: var(--color-principal);
+    padding: 10px 0;
+    border-bottom: 2px solid #ffffff22;
+}
+
+.barra-navegacion ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.barra-navegacion a {
+    color: var(--texto-blanco);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.barra-navegacion a:hover,
+.barra-navegacion .activo {
+    background-color: #1a2a4a;
+}
+
+/* Formulario */
+.formulario-producto {
+    margin-top: 30px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px #00000010;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.fila-formulario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.fila-formulario input {
+    flex: 1;
+    min-width: 220px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    height: 100px;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Botones */
+button,
+.btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--texto-blanco);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.primario {
+    background-color: var(--azul-claro);
+}
+
+.secundario {
+    background-color: var(--azul-btn);
+}
+
+.rojo {
+    background-color: var(--rojo);
+}
+
+.salir {
+    display: block;
+    margin: 40px auto 0;
+}
+
+/* Tabla */
+.seccion-tabla {
+    margin-top: 30px;
+}
+
+.tabla-inventario {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px #00000015;
+}
+
+.tabla-inventario th,
+.tabla-inventario td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+}
+
+.tabla-inventario th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.verde {
+    color: var(--verde);
+}
+
+.rojo {
+    color: var(--rojo);
+}
+
+.amarillo {
+    color: var(--azul-claro);
+}
+
+/* Paginación */
+.paginacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+

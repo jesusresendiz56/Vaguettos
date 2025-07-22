@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro</title>
+  <link rel="stylesheet" href="../scr/estilosregistro.css" />
+</head>
+<body class="container">
+  <div class="logo-section left-rounded">
+    <img src="../scr/Imagen de WhatsApp 2025-06-16 a las 18.19.19_3ca9d436.jpg" alt="Logo Vaguettos" class="logo" />
+  </div>
+
+  <div class="form-section">
+    <h2>Llena el formulario para registrarte</h2>
+    
+    <form method="POST" action="../controlador/engine_registro.php">
+      
+      <label>Nombre Completo:</label>
+      <input type="text" name="nombre_completo" required />
+
+      <label>Usuario:</label>
+      <input type="text" name="usuario" required />
+
+      <label>Correo Electrónico:</label>
+      <input type="email" name="correo" required />
+
+      <label>Contraseña:</label>
+      <input type="password" name="contraseña" required />
+
+      <label>Dirección:</label>
+      <input type="text" name="direccion" required />
+
+      <label>Teléfono:</label>
+      <input type="tel" name="telefono" required />
+
+      <button type="submit">Registrar</button>
+    </form>
+
+    <p>¿Ya cuentas con una cuenta? <a href="../vista/login.php">Inicia sesión aquí</a></p>
+  </div>
+</body>
+</html>
