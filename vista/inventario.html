@@ -24,25 +24,38 @@
     </header>
 
     <!-- Formulario -->
-    <form method="post">
-        <div class="form-group">
-            <input type="text" name="codigo" placeholder="Ingrese código del producto" required />
-            <input type="text" name="modelo" placeholder="Ingrese modelo del producto" required />
-            <button type="button">Editar</button>
-        </div>
-        <div class="form-group">
-            <input type="number" name="stock" placeholder="Ingrese stock" min="0" required />
-            <input type="text" name="precio" placeholder="Ingrese precio" required />
-            <button type="button">Agregar</button>
-        </div>
-        <div class="form-group">
-            <input type="date" name="fecha" required />
-            <button type="button">Enviar</button>
-        </div>
+    <form method="post" enctype="multipart/form-data">
+    <!-- Fila 1: Código y Modelo -->
+    <div class="form-group">
+        <input type="text" name="codigo" placeholder="Código del producto" required />
+        <input type="text" name="modelo" placeholder="Modelo del producto" required />
+    </div>
 
+    <!-- Fila 2: Stock y Precio -->
+    <div class="form-group">
+        <input type="number" name="stock" placeholder="Cantidad en stock" min="0" required />
+        <input type="text" name="precio" placeholder="Precio del producto" required />
+    </div>
+
+    <!-- Fila 3: Fecha y Imagen -->
+    <div class="form-group">
+        <input type="date" name="fecha" required />
+        <label for="imagen">Imagen del producto:</label>
+        <input type="file" name="imagen" id="imagen" accept="image/*" required />
+    </div>
+
+    <!-- Descripción -->
+    <div class="form-group">
         <textarea name="descripcion" placeholder="Descripción del producto..." rows="3"></textarea>
-        <button type="submit">Guardar</button>
-    </form>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="form-group">
+        <button type="submit" name="accion" value="guardar">Guardar</button>
+        <button type="submit" name="accion" value="modificar">Modificar</button>
+        <button type="submit" name="accion" value="enviar">Enviar</button>
+    </div>
+</form>
 
     <!-- Tabla de productos -->
     <section>
