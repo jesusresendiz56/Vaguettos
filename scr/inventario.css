@@ -1,203 +1,172 @@
-/* inventario.css */
-
-/* Colores */
-:root {
-    --color-principal: #071739;
-    --fondo-claro: #f9f9f9;
-    --texto-oscuro: #071739;
-    --texto-blanco: #ffffff;
-    --verde: #2ecc71;
-    --rojo: #e74c3c;
-    --azul-claro: #3498db;
-    --azul-btn: #0d1b3f;
+/* --------- Reset básico --------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Base */
 body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--fondo-claro);
-    color: var(--texto-oscuro);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Arial, sans-serif;
+  background-color: #f5f7fa;
+  padding: 20px;
 }
 
-/* Contenedor */
-.contenedor-principal {
-    width: 95%;
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 20px;
-    background-color: #071739;
-    border-radius: 12px;
-    box-shadow: 0 0 10px #00000015;
+/* --------- Barra de navegación --------- */
+nav {
+  background-color: #071739;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
 }
 
-/* Cabecera */
-.cabecera {
-    background-color: var(--color-principal);
-    padding: 20px;
-    text-align: center;
-    border-radius: 0 0 10px 10px;
+.nav-link {
+  color: #ecf0f1;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
 }
 
-.logo-cabecera {
-    height: 60px;
-    margin-bottom: 10px;
+.nav-link:hover {
+  background-color: #0a1c3d;
 }
 
-.titulo-principal {
-    font-size: 28px;
-    color: var(--texto-blanco);
-    margin: 0;
+/* --------- Encabezado --------- */
+header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-/* Barra de navegación */
-.barra-navegacion {
-    background-color: var(--color-principal);
-    padding: 10px 0;
-    border-bottom: 2px solid #ffffff22;
+header img {
+  height: 60px;
 }
 
-.barra-navegacion ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    margin: 0;
-    padding: 0;
-    gap: 40px;
-    flex-wrap: wrap;
+header h1 {
+  font-size: 28px;
+  color: #071739;
 }
 
-.barra-navegacion a {
-    color: var(--texto-blanco);
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: background-color 0.3s;
+/* --------- Formulario --------- */
+form {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.barra-navegacion a:hover,
-.barra-navegacion .activo {
-    background-color: #1a2a4a;
+.form-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
-/* Formulario */
-.formulario-producto {
-    margin-top: 30px;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px #00000010;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+form input,
+form textarea,
+form button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
-.fila-formulario {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: space-between;
+form input[type="text"],
+form input[type="number"],
+form input[type="date"] {
+  flex: 1 1 250px;
 }
 
-.fila-formulario input {
-    flex: 1;
-    min-width: 220px;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
+form textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 70px;
+  font-family: Arial, sans-serif;
 }
 
-textarea {
-    width: 100%;
-    padding: 10px;
-    height: 100px;
-    resize: none;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #333;
+form button {
+  background-color: #071739;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-/* Botones */
-button,
-.btn {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-    color: var(--texto-blanco);
-    transition: background-color 0.2s ease-in-out;
+form button:hover {
+  background-color: #0a1c3d;
 }
 
-.primario {
-    background-color: var(--azul-claro);
+form input:focus,
+form textarea:focus {
+  border-color: #071739;
+  outline: none;
 }
 
-.secundario {
-    background-color: var(--azul-btn);
+/* --------- Tabla --------- */
+section {
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-.rojo {
-    background-color: var(--rojo);
+section h2 {
+  color: #071739;
+  font-size: 24px;
+  margin-bottom: 15px;
 }
 
-.salir {
-    display: block;
-    margin: 40px auto 0;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Tabla */
-.seccion-tabla {
-    margin-top: 30px;
+thead {
+  background-color: #071739;
+  color: white;
 }
 
-.tabla-inventario {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #ffffff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 0 10px #00000015;
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
-.tabla-inventario th,
-.tabla-inventario td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    font-size: 15px;
+tbody tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
 }
 
-.tabla-inventario th {
-    background-color: #f0f0f0;
-    font-weight: bold;
+/* --------- Botón Salir --------- */
+button:last-of-type {
+  display: block;
+  margin: 30px auto 0;
+  background-color: red;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
 }
 
-.verde {
-    color: var(--verde);
+button:last-of-type:hover {
+  background-color: darkred;
 }
 
-.rojo {
-    color: var(--rojo);
-}
-
-.amarillo {
-    color: var(--azul-claro);
-}
-
-/* Paginación */
-.paginacion {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
 

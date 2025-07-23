@@ -2,52 +2,53 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrador de Pagos</title>
-    <link rel="stylesheet" href="estilos.css">
+    <title>Administrador de Clientes</title>
+    <link rel="stylesheet" href="usuarios.css">
 </head>
-<body class="contenedor-principal">
 
-    <!-- Barra de navegación -->
-    <nav class="barra-navegacion">
-        <ul>
-             <li><a href="indexadmin.html" class="activo">Inicio</a></li>
-            <li><a href="clientes.html">Administración de Clientes</a></li>
-            <li><a href="pagos.html" class="activo">Administración de Pagos</a></li>
-            <li><a href="inventario.html">Gestión de Inventario</a></li>
-        </ul>
-    </nav>
+<body>
+    <header>
+        <a href="#" class="logo">
+            <img src="vaguettoslogo.jpg" alt="Logo de Vaguettos">
+            <h2>Vaguettos</h2>
+        </a>
 
-    <header class="cabecera">
-        <div class="logo-titulo">
-            <img src="vaguettoslogo.jpg" alt="Logo de Vaguettos" class="logo">
+        <nav>
+            <a href="indexadmin.html" class="nav-link">Inicio</a>
+            <a href="#" class="nav-link">Administración de Clientes</a>
+            <a href="pagos.html" class="nav-link">Administración de Pagos</a>
+            <a href="inventario.html" class="nav-link">Gestión de Inventario</a>
+            <a href="cerrarSesion.html" class="nav-link">Cerrar Sesión</a>
+        </nav>
+
+        <div>
             <h1 class="titulo-principal">Administración de Clientes</h1>
         </div>
     </header>
 
-    <main class="contenido-principal">
-        <section class="seccion-busqueda">
-            <h2 class="titulo-seccion">Búsqueda de Clientes</h2>
-            <input type="text" class="campo-busqueda" placeholder="Buscar por usuario o fecha...">
-        </section>
+    <div class="index-container">
+        <form method="post">
+            <div class="btn">
+                <input type="search" name="buscarCliente" placeholder="Buscar Cliente...">
+                <button type="submit" name="buscar">🔎</button>
+            </div>
+        </form>
+    </div><br>
 
-        <div class="contenedor-tabla">
-            <table class="tabla-pagos">
-                <thead class="tabla-cabecera">
-                    <tr class="fila-cabecera">
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Direccion</th>
-                        <th>Telefono</th>
-                        <th>Editar</th>
-                        <th>Eliminar</th>
-                    </tr>
-                </thead>
-                <tbody class="cuerpo-tabla" id="cuerpo-tabla">
-                    
-                </tbody>
-            </table>
-        </div>
-    </main>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody id="cuerpo-tabla">
+    
+        </tbody>
+    </table>
 </body>
 </html>
