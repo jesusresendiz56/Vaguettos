@@ -22,7 +22,7 @@ $usuario = $_SESSION['usuario'] ?? null;
 <head>
   <meta charset="UTF-8" />
   <title>Vaguettos Accesorios</title>
-  <link rel="stylesheet" href="../scr/index.css">
+  <link rel="stylesheet" href="../scr/css/index.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -30,7 +30,7 @@ $usuario = $_SESSION['usuario'] ?? null;
   <!-- Encabezado -->
   <header>
     <div class="top-bar">
-      <img src="../scr/Imagen de WhatsApp 2025-06-16 a las 18.19.19_3ca9d436.jpg" alt="Vaguettos Logo" class="logo">
+      <img src="../scr/imagenes/logo.jpg" alt="Vaguettos Logo" class="logo">
       <p>Vaguettos</p>
       <?php if ($usuario): ?>
         <form method="POST" action="../controlador/logout.php" style="display:inline;">

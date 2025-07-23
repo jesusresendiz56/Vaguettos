@@ -6,7 +6,7 @@ session_start();
 <head>
   <meta charset="UTF-8" />
   <title>Iniciar Sesión</title>
-  <link rel="stylesheet" href="../scr/estiloslogin.css" />
+  <link rel="stylesheet" href="../scr/css/estiloslogin.css" />
 </head>
 <body class="container">
   <div class="form-section">
@@ -32,7 +32,7 @@ session_start();
   </div>
 
   <div class="logo-section left-rounded">
-    <img src="../scr/Imagen de WhatsApp 2025-06-16 a las 18.19.19_3ca9d436.jpg" alt="Logo" class="logo" />
+    <img src="../scr/imagenes/logo.jpg" alt="Logo" class="logo" />
   </div>
 </body>
 </html>

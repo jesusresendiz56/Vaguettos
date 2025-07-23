@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Sesión Expirada</title>
-  <link rel="stylesheet" href="../scr/sesion_expirada.css" />
+  <link rel="stylesheet" href="../scr/css/sesion_expirada.css" />
 </head>
 <body>
   <div class="container">
