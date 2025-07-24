@@ -1,3 +1,7 @@
+<?php 
+include '../modelo/conexion.php'; 
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,8 +9,9 @@
     <title>Administrador de Clientes</title>
     <link rel="stylesheet" href="../scr/css/usuarios.css">
 </head>
-
 <body>
+
+    
     <header>
         <a href="#" class="logo">
             <img src="../scr/imagenes/logo.jpg" alt="Logo de Vaguettos">
@@ -26,6 +31,7 @@
         </div>
     </header>
 
+    
     <div class="index-container">
         <form method="post">
             <div class="btn">
@@ -35,6 +41,7 @@
         </form>
     </div><br>
 
+    
     <table>
         <thead>
             <tr>
@@ -47,9 +54,34 @@
                 <th>Eliminar</th>
             </tr>
         </thead>
-        <tbody id="cuerpo-tabla">
-    
+        <tbody>
+        <?php
+            //Busqueda por Usuario o Correo
+            $condicion = "";
+            if (isset($_POST['buscar'])) {
+                $busqueda = $conn->real_escape_string($_POST['buscarCliente']);
+                $condicion = "WHERE usuario LIKE '%$busqueda%' OR correo LIKE '%$busqueda%'";
+            }
+
+            // Consulta a la base de datos
+            $sql = "SELECT id_usuario, usuario, direccion, correo, telefono FROM usuarios $condicion";
+            $resultado = $conn->query($sql);
+
+            // Mostrar los resultados en la tabla
+            while ($row = $resultado->fetch_assoc()) {
+                echo "<tr>
+                        <td>{$row['id_usuario']}</td>
+                        <td>{$row['usuario']}</td>
+                        <td>{$row['direccion']}</td>
+                        <td>{$row['correo']}</td>
+                        <td>{$row['telefono']}</td>
+                        <td><a href='editar_cliente.php?id={$row['id_usuario']}'>✏️</a></td>
+                        <td><a href='../controlador/eliminar_cliente.php?id={$row['id_usuario']}' onclick=\"return confirm('¿Deseas eliminar este cliente?')\">🗑️</a></td>
+                      </tr>";
+            }
+        ?>
         </tbody>
     </table>
+
 </body>
 </html>
