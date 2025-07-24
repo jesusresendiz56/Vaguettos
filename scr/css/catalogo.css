@@ -1,4 +1,3 @@
-/* ----- Reset básico ----- */
 * {
   margin: 0;
   padding: 0;
@@ -7,219 +6,185 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f7fa;
-  padding-top: 120px; /* espacio por top-bar + nav */
+  background-color: #f5f7fa;
+  padding: 20px;
 }
 
-/* ----- Top Bar ----- */
-.top-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 65px;
-  background-color: white;
-  color: #071739;
+
+header {
+  margin-bottom: 25px;
+}
+
+.logo {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 25px;
-  z-index: 1000;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.top-bar .logo {
-  height: 45px;
-}
-
-.top-bar p {
-  font-size: 18px;
-  font-weight: bold;
-  margin-left: 15px;
-}
-
-.btn-login {
-  color: #071739;
   text-decoration: none;
-  font-weight: bold;
-  border: 1px solid #071739;
-  padding: 6px 12px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
-.btn-login:hover {
-  background-color: white;
+.logo img {
+  height: 60px;
+  width: auto;
+}
+
+.logo h2 {
+  font-size: 24px;
   color: #071739;
 }
 
-/* ----- Menú de navegación principal ----- */
-.main-nav {
-  position: fixed;
-  top: 65px;
-  left: 0;
-  width: 100%;
-  background-color: #0a1c3d;
+
+nav {
+  background-color: #071739;
+  padding: 10px 20px;
+  border-radius: 8px;
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 10px 0;
-  z-index: 900;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+
+  justify-content: center;  
 }
 
-.main-nav a {
+
+.nav-link {
   color: white;
   text-decoration: none;
   font-weight: bold;
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: 8px 12px;
+  border-radius: 5px;
   transition: background-color 0.3s;
 }
 
-.main-nav a:hover {
-  background-color: #1a2b4f;
+.nav-link:hover {
+  background-color: 	#274B74;
 }
 
-/* ----- Layout general ----- */
-.catalogo {
-  display: flex;
-  gap: 30px;
-  max-width: 1200px;
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7fb;
+  margin: 0;
+  padding: 20px;
+  color: #2c3e50;
+}
+
+.container {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 20px;
 }
 
-/* ----- Filtros ----- */
-.filtros {
-  width: 220px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
 
-.filtros h3 {
-  margin-bottom: 15px;
-  color: #071739;
-}
-
-.filtros ul {
-  list-style: none;
-  margin: 10px 0;
-}
-
-.filtros li {
-  margin: 5px 0;
-}
-
-/* ----- Productos ----- */
-.productos {
-  flex: 1;
-}
-
-.productos h2 {
-  font-size: 24px;
-  color: #071739;
-  margin-bottom: 20px;
-}
-
-/* ----- Grid de productos ----- */
-.grid-productos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-}
-
-.producto {
-  background-color: white;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.title {
   text-align: center;
-  position: relative;
-  transition: transform 0.2s ease;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #071739; 
 }
 
-.producto:hover {
+
+.filter-form {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.filter-form select {
+  padding: 10px 14px;
+  font-size: 1rem;
+  border: 2px solid #071739;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #071739;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.filter-form select:hover,
+.filter-form select:focus {
+  background-color: #071739;
+  color: white;
+  outline: none;
+}
+
+
+.productos-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  justify-content: center;
+}
+
+
+.producto-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(13, 71, 161, 0.15);
+  width: 230px;
+  padding: 18px 15px 25px;
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.producto-card:hover {
+  box-shadow: 0 8px 20px rgba(13, 71, 161, 0.3);
   transform: translateY(-5px);
 }
 
-.producto img {
+.producto-card img {
   max-width: 100%;
   height: 160px;
-  object-fit: cover;
-  border-radius: 6px;
+  object-fit: contain;
+  margin-bottom: 15px;
+  border-radius: 8px;
 }
 
-.producto h4 {
-  font-size: 18px;
-  margin: 10px 0 5px;
-  color: #071739;
+
+.producto-nombre {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #274B74;
+  margin: 0 0 10px 0;
+  min-height: 48px; 
 }
 
-.producto .categoria {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 5px;
+/* Precio */
+.producto-precio {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ef5350; 
+  margin-bottom: 18px;
 }
 
-.producto .precio {
-  font-weight: bold;
-  color: #0a1c3d;
-  margin-bottom: 10px;
-}
 
-.producto button {
+.btn-ver-mas {
+  text-decoration: none;
   background-color: #071739;
   color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
   transition: background-color 0.3s ease;
 }
 
-.producto button:hover {
-  background-color: #0a1c3d;
-}
-
-/* ----- Producto agotado ----- */
-.producto.agotado {
-  opacity: 0.6;
-  pointer-events: none;
-  position: relative;
-}
-
-.etiqueta-agotado {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: red;
-  color: white;
-  padding: 4px 8px;
-  font-size: 12px;
-  border-radius: 4px;
-}
-
-/* ----- Paginación ----- */
-.paginacion {
-  display: flex;
-  justify-content: center;
-  margin-top: 30px;
-  gap: 10px;
-}
-
-.paginacion button {
+.btn-ver-mas:hover {
   background-color: #071739;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
-.paginacion span {
-  font-weight: bold;
-  padding: 6px 10px;
+
+.sin-resultados {
+  text-align: center;
+  font-style: Arial, sans-serif;
+  font-size: 1.1rem;
+  color: black;
+  width: 100%;
+  margin-top: 50px;
 }
+
+

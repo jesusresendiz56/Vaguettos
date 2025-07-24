@@ -1,10 +1,10 @@
 <?php
-ini_set('session.gc_maxlifetime', 300); // Tiempo de vida de sesión
+// Configura y gestiona la sesión con límite de inactividad
+ini_set('session.gc_maxlifetime', 300);
 session_set_cookie_params(300);
 session_start();
 
-// Verifica inactividad
-$tiempo_max_inactivo = 300; // 5 minutos
+$tiempo_max_inactivo = 300;
 if (isset($_SESSION['ultimo_acceso'])) {
     $inactivo = time() - $_SESSION['ultimo_acceso'];
     if ($inactivo > $tiempo_max_inactivo) {
@@ -27,7 +27,7 @@ $usuario = $_SESSION['usuario'] ?? null;
 </head>
 <body>
 
-  <!-- Encabezado -->
+  <!-- Encabezado con logo, login y menú -->
   <header>
     <div class="top-bar">
       <img src="../scr/imagenes/logo.jpg" alt="Vaguettos Logo" class="logo">
@@ -45,13 +45,13 @@ $usuario = $_SESSION['usuario'] ?? null;
 
     <nav class="main-nav">
       <a href="index.php">Inicio</a>
-      <a href="catalogo.html">Catálogo</a>
+      <a href="catalogo.php">Catálogo</a>
       <a href="#">Promociones</a>
       <a href="#">Carrito</a>
     </nav>
   </header>
 
-  <!-- Banner -->
+  <!-- Banner principal -->
   <section class="banner">
     <h1>“Todo Para Tu Auto, Cuando Y<br>Donde Quieras”</h1>
   </section>
@@ -83,7 +83,7 @@ $usuario = $_SESSION['usuario'] ?? null;
     </div>
   </section>
 
-  <!-- Marcas -->
+  <!-- Marcas destacadas -->
   <section class="marcas">
     <h2>Marcas Destacadas</h2>
     <div class="marca-botones">
@@ -95,7 +95,7 @@ $usuario = $_SESSION['usuario'] ?? null;
     </div>
   </section>
 
-  <!-- Servicios y ubicación -->
+  <!-- Servicios ofrecidos y mapa -->
   <section class="info">
     <div class="servicios">
       <h3>Nuestros Servicios</h3>
@@ -132,10 +132,10 @@ $usuario = $_SESSION['usuario'] ?? null;
     <p>&copy; 2025 VAGUETTOS</p>
   </footer>
 
-  <!-- JS de sesión por inactividad -->
+  <!-- Script para controlar sesión por inactividad -->
   <script>
     let tiempoInactivo = 0;
-    const limite = 300; // 5 minutos
+    const limite = 300;
 
     function resetInactividad() {
       tiempoInactivo = 0;
@@ -147,11 +147,9 @@ $usuario = $_SESSION['usuario'] ?? null;
 
     setInterval(() => {
       tiempoInactivo++;
-
       if (tiempoInactivo === (limite - 60)) {
         alert("⚠️ Tu sesión está por expirar en 1 minuto por inactividad.");
       }
-
       if (tiempoInactivo < limite) {
         fetch("../controlador/ping.php").catch(() => {});
       } else {
@@ -161,3 +159,4 @@ $usuario = $_SESSION['usuario'] ?? null;
   </script>
 </body>
 </html>
+

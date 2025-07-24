@@ -75,8 +75,12 @@ include '../modelo/conexion.php';
                         <td>{$row['direccion']}</td>
                         <td>{$row['correo']}</td>
                         <td>{$row['telefono']}</td>
-                        <td><a href='editar_cliente.php?id={$row['id_usuario']}'>✏️</a></td>
-                        <td><a href='../controlador/eliminar_cliente.php?id={$row['id_usuario']}' onclick=\"return confirm('¿Deseas eliminar este cliente?')\">🗑️</a></td>
+
+                        <td><a href='editar_cliente.php?id={$row['id_usuario']}'>
+                        <img src='../scr/imagenes/editar.png' alt='Editar' width='20' height='20'></a></td>
+
+                        <td><a href='../controlador/eliminar_cliente.php?id={$row['id_usuario']}' onclick=\"return confirm('¿Deseas eliminar este cliente?')\">
+                        <img src='../scr/imagenes/eliminar.png' alt='Eliminar' width='20' height='20'></a></td>
                       </tr>";
             }
         ?>
