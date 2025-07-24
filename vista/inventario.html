@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- Barra de navegación -->
+    
     <nav>
         <a href="indexadmin.html" class="nav-link">Inicio</a>
         <a href="usuarios.html" class="nav-link">Administración de Clientes</a>
@@ -17,7 +17,7 @@
         <a href="cerrarSesion.html" class="nav-link">Cerrar Sesión</a>
     </nav>
 
-    <!-- Encabezado -->
+    
     <header>
         <img src="../scr/imagenes/logo.jpg" alt="Logo Vaguettos" />
         <h1>Gestión de Inventario</h1>
@@ -25,37 +25,38 @@
 
     <!-- Formulario -->
     <form method="post" enctype="multipart/form-data">
-    <!-- Fila 1: Código y Modelo -->
+
+    
     <div class="form-group">
         <input type="text" name="codigo" placeholder="Código del producto" required />
         <input type="text" name="modelo" placeholder="Modelo del producto" required />
     </div>
 
-    <!-- Fila 2: Stock y Precio -->
+    
     <div class="form-group">
         <input type="number" name="stock" placeholder="Cantidad en stock" min="0" required />
         <input type="text" name="precio" placeholder="Precio del producto" required />
     </div>
 
-    <!-- Fila 3: Fecha y Imagen -->
+    
     <div class="form-group">
         <input type="date" name="fecha" required />
         <label for="imagen">Imagen del producto:</label>
         <input type="file" name="imagen" id="imagen" accept="image/*" required />
     </div>
 
-    <!-- Descripción -->
+   
     <div class="form-group">
         <textarea name="descripcion" placeholder="Descripción del producto..." rows="3"></textarea>
     </div>
 
-    <!-- Botones de acción -->
+    
     <div class="form-group">
-        <button type="submit" name="accion" value="guardar">Guardar</button>
-        <button type="submit" name="accion" value="modificar">Modificar</button>
-        <button type="submit" name="accion" value="enviar">Enviar</button>
+        <button type="submit" name="accion" value="modificar">Guardar</button>
     </div>
 </form>
+
+   
 
     <!-- Tabla de productos -->
     <section>
@@ -65,9 +66,10 @@
                 <tr>
                     <th>Producto</th>
                     <th>Precio</th>
-                    <th>Stock</th>
-                    <th>Fecha</th>
+                    <th>Cantidad</th>
                     <th>Disponibilidad</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
                 </tr>
             </thead>
             <tbody id="cuerpo-tabla">

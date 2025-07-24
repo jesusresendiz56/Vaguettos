@@ -24,7 +24,7 @@ nav {
 }
 
 .nav-link {
-  color: #ecf0f1;
+  color: white;
   text-decoration: none;
   font-weight: bold;
   padding: 8px 14px;
@@ -33,7 +33,7 @@ nav {
 }
 
 .nav-link:hover {
-  background-color: #0a1c3d;
+  background-color: #274B74;
 }
 
 /* --------- Encabezado --------- */
@@ -56,7 +56,7 @@ header h1 {
 }
 
 /* --------- Formulario --------- */
-/* --------- FORMULARIO --------- */
+
 form {
   background-color: #ffffff;
   padding: 25px;
@@ -192,8 +192,5 @@ button:last-of-type {
   transition: background-color 0.3s;
 }
 
-button:last-of-type:hover {
-  background-color: darkred;
-}
 
 
