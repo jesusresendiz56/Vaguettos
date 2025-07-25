@@ -1,14 +1,14 @@
 <?php
+// conexión a base de datos remota (Railway)
 $host = 'trolley.proxy.rlwy.net';
 $port = 49388;
 $user = 'root';
 $pass = 'OSjIyZStEWbFPNPMCcKZEMuPIxNnyjNL';
 $dbname = 'railway';
 
-$mysqli = new mysqli($host, $user, $pass, $dbname, $port);
+$conn2 = new mysqli($host, $user, $pass, $dbname, $port);
 
-if ($mysqli->connect_error) {
-    die('Error de conexión (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
-} else {
-    echo "Conexión exitosa";
+if ($conn2->connect_error) {
+    die('Error de conexión a Railway (' . $conn2->connect_errno . ') ' . $conn2->connect_error);
 }
+?>

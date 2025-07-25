@@ -1,11 +1,21 @@
 <?php
 include '../modelo/conexion.php';
+include '../modelo/conexion2.php';
 
-$id = $_GET['id'];
+// Elige la conexión que quieres usar: $conn o $conn2
+$db = $conn2;  // Cambia a $conn si quieres usar la conexión local
+
+$id = (int)($_GET['id'] ?? 0);
 
 $sql = "SELECT * FROM usuarios WHERE id_usuario = $id";
-$result = $conn->query($sql);
-$cliente = $result->fetch_assoc();
+$result = $db->query($sql);
+$cliente = $result ? $result->fetch_assoc() : null;
+
+if (!$cliente) {
+    // Si no se encontró el cliente, redirigir al listado
+    header("Location: usuarios.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -26,28 +36,24 @@ $cliente = $result->fetch_assoc();
         <nav>
             <a href="#" class="nav-link">Editar datos del cliente</a>
         </nav>
-
-        
     </header>
 
     <!-- Formulario de edición -->
     <div class="index-container">
         <form method="post" action="../controlador/actualizar_cliente.php" class="form-editar">
-            
-        
-            <input type="hidden" name="id_usuario" value="<?= $cliente['id_usuario'] ?>">
+            <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($cliente['id_usuario']) ?>">
 
             <label>Usuario:</label>
-            <input type="text" name="usuario" value="<?= $cliente['usuario'] ?>" required>
+            <input type="text" name="usuario" value="<?= htmlspecialchars($cliente['usuario']) ?>" required>
 
             <label>Dirección:</label>
-            <input type="text" name="direccion" value="<?= $cliente['direccion'] ?>">
+            <input type="text" name="direccion" value="<?= htmlspecialchars($cliente['direccion']) ?>">
 
             <label>Correo:</label>
-            <input type="email" name="correo" value="<?= $cliente['correo'] ?>" required>
+            <input type="email" name="correo" value="<?= htmlspecialchars($cliente['correo']) ?>" required>
 
             <label>Teléfono:</label>
-            <input type="text" name="telefono" value="<?= $cliente['telefono'] ?>">
+            <input type="text" name="telefono" value="<?= htmlspecialchars($cliente['telefono']) ?>">
 
             <div class="form-group">
                 <button type="submit" name="actualizar">Actualizar</button>
@@ -58,5 +64,6 @@ $cliente = $result->fetch_assoc();
 
 </body>
 </html>
+
 
 

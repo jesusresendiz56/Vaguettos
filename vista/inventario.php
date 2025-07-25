@@ -1,5 +1,9 @@
 <?php
-include '../modelo/conexion.php';
+include '../modelo/conexion.php';    // conexión local ($conn)
+include '../modelo/conexion2.php';   // conexión remota ($conn2)
+
+// Cambia esta línea para usar la conexión deseada
+$db = $conn2; // Usa $conn para local o $conn2 para producción
 
 $modo = "nuevo";
 $producto = [
@@ -17,7 +21,7 @@ $producto = [
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
-    $stmt = $conn->prepare("SELECT * FROM productos WHERE id_producto = ?");
+    $stmt = $db->prepare("SELECT * FROM productos WHERE id_producto = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $resultado = $stmt->get_result();
@@ -79,7 +83,7 @@ if (isset($_GET['id'])) {
     <select id="id_categoria" name="id_categoria" required>
         <option value="">Selecciona una categoría</option>
         <?php
-        $cats = $conn->query("SELECT id_categoria, nombre FROM categorias");
+        $cats = $db->query("SELECT id_categoria, nombre FROM categorias");
         while ($cat = $cats->fetch_assoc()) {
             $selected = ($cat['id_categoria'] == $producto['id_categoria']) ? "selected" : "";
             echo "<option value='" . htmlspecialchars($cat['id_categoria']) . "' $selected>" . htmlspecialchars($cat['nombre']) . "</option>";
@@ -100,8 +104,6 @@ if (isset($_GET['id'])) {
 
     <button type="submit" name="accion" value="modificar"><?= $modo === "nuevo" ? "Guardar" : "Actualizar" ?></button>
 </form>
-
-
 
 </body>
 </html>

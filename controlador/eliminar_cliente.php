@@ -1,22 +1,22 @@
 <?php
-include '../modelo/conexion.php';
+include '../modelo/conexion.php';     // conexión local ($conn)
+include '../modelo/conexion2.php';    // conexión remota ($conn2)
 
-// Validar que se recibió el ID
+// Cambiar aquí para usar la conexión deseada
+$db = $conn2;
+
 if (isset($_GET['id'])) {
     $id = (int) $_GET['id'];
 
-    // Consulta para eliminar el usuario por id
     $sql = "DELETE FROM usuarios WHERE id_usuario = $id";
 
-    if ($conn->query($sql) === TRUE) {
-        // Redirigir al listado tras eliminar
+    if ($db->query($sql) === TRUE) {
         header("Location: ../vista/usuarios.php");
         exit();
     } else {
-        echo "Error al eliminar el cliente: " . $conn->error;
+        echo "Error al eliminar el cliente: " . $db->error;
     }
 } else {
-    // Si no se recibió id, redirigir al listado
     header("Location: ../vista/usuarios.php");
     exit();
 }

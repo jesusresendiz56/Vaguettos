@@ -1,5 +1,9 @@
 <?php
-include '../modelo/conexion.php';
+include '../modelo/conexion.php';     // conexión local ($conn)
+include '../modelo/conexion2.php';    // conexión remota ($conn2)
+
+// Cambia esta línea para definir qué conexión usar (local o remota)
+$db = $conn2;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["accion"]) && $_POST["accion"] === "modificar") {
     $modo = $_POST["modo"];
@@ -20,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["accion"]) && $_POST["
         if (move_uploaded_file($imagen_temp, $ruta_destino)) {
             $sql = "INSERT INTO productos (nombre, descripcion, precio, stock, imagen_url, id_categoria, tipo, modelo_auto, fechas_aplicables)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
+            $stmt = $db->prepare($sql);
             $stmt->bind_param("ssdisisss", $nombre, $descripcion, $precio, $stock, $imagen_nueva, $id_categoria, $tipo, $modelo_auto, $fechas_aplicables);
             $stmt->execute();
             $stmt->close();
@@ -31,11 +35,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["accion"]) && $_POST["
         if (!empty($imagen_nueva)) {
             move_uploaded_file($imagen_temp, $ruta_destino);
             $sql = "UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, imagen_url=?, id_categoria=?, tipo=?, modelo_auto=?, fechas_aplicables=? WHERE id_producto=?";
-            $stmt = $conn->prepare($sql);
+            $stmt = $db->prepare($sql);
             $stmt->bind_param("ssdisisssi", $nombre, $descripcion, $precio, $stock, $imagen_nueva, $id_categoria, $tipo, $modelo_auto, $fechas_aplicables, $id_producto);
         } else {
             $sql = "UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, id_categoria=?, tipo=?, modelo_auto=?, fechas_aplicables=? WHERE id_producto=?";
-            $stmt = $conn->prepare($sql);
+            $stmt = $db->prepare($sql);
             $stmt->bind_param("ssdiisssi", $nombre, $descripcion, $precio, $stock, $id_categoria, $tipo, $modelo_auto, $fechas_aplicables, $id_producto);
         }
         $stmt->execute();
@@ -44,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["accion"]) && $_POST["
         exit;
     }
 
-    $conn->close();
+    $db->close();
 }
 ?>
+
