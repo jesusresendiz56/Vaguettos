@@ -1,31 +1,29 @@
 <?php
-// Conexión local y remota
-//include '../modelo/conexion.php';   // $conn (local)
-include '../modelo/conexion2.php';  // $conn2 (remota)
+// --- Incluir conexiones ---
+include '../modelo/conexion.php';   // local
+include '../modelo/conexion2.php';  // remota
 
-// Puedes elegir aquí cuál conexión usar:
-// $db = $conn;    // Local
-$db = $conn2;      // Remota
+// --- Cambiar aquí a false para usar local ---
+$usarRemoto = true;
+$conn = $usarRemoto ? $conn2 : $conn;
 
-// Obtener opciones únicas para los filtros 
-$submarcas = mysqli_query($db, "SELECT DISTINCT modelo_auto FROM productos ORDER BY modelo_auto");
-//$fechas = mysqli_query($db, "SELECT DISTINCT fechas_aplicables FROM productos ORDER BY fechas_aplicables");
-$tipos = mysqli_query($db, "SELECT DISTINCT tipo FROM productos ORDER BY tipo");
+// Obtener opciones únicas para los filtros
+$submarcas = $conn->query("SELECT DISTINCT modelo_auto FROM productos ORDER BY modelo_auto");
+$fechas = $conn->query("SELECT DISTINCT years_aplicables FROM productos ORDER BY years_aplicables");
+$tipos = $conn->query("SELECT DISTINCT tipo FROM productos ORDER BY tipo");
 
 $f_submarca = $_GET['modelo_auto'] ?? '';
 $f_fecha = $_GET['fecha'] ?? '';
 $f_tipo = $_GET['tipo'] ?? '';
 
-// Construir la cláusula WHERE según los filtros seleccionados
 $where = [];
-if ($f_submarca !== '') $where[] = "modelo_auto = '" . mysqli_real_escape_string($db, $f_submarca) . "'";
-if ($f_fecha !== '')    $where[] = "fechas_aplicables = '" . mysqli_real_escape_string($db, $f_fecha) . "'";
-if ($f_tipo !== '')     $where[] = "tipo = '" . mysqli_real_escape_string($db, $f_tipo) . "'";
+if ($f_submarca !== '') $where[] = "modelo_auto = '" . $conn->real_escape_string($f_submarca) . "'";
+if ($f_fecha !== '')    $where[] = "years_aplicables = '" . $conn->real_escape_string($f_fecha) . "'";
+if ($f_tipo !== '')     $where[] = "tipo = '" . $conn->real_escape_string($f_tipo) . "'";
 
 $where_sql = count($where) > 0 ? "WHERE " . implode(' AND ', $where) : '';
 
-// Consultar productos filtrados
-$productos = mysqli_query($db, "SELECT * FROM productos $where_sql");
+$productos = $conn->query("SELECT * FROM productos $where_sql");
 ?>
 
 <!DOCTYPE html>
@@ -59,7 +57,7 @@ $productos = mysqli_query($db, "SELECT * FROM productos $where_sql");
   <form method="GET" class="filter-form">
     <select name="modelo_auto" onchange="this.form.submit()">
       <option value="">Submarca (Todas)</option>
-      <?php while ($row = mysqli_fetch_assoc($submarcas)): ?>
+      <?php while ($row = $submarcas->fetch_assoc()): ?>
         <option value="<?= htmlspecialchars($row['modelo_auto']) ?>" <?= $row['modelo_auto'] === $f_submarca ? 'selected' : '' ?>>
           <?= htmlspecialchars($row['modelo_auto']) ?>
         </option>
@@ -67,17 +65,17 @@ $productos = mysqli_query($db, "SELECT * FROM productos $where_sql");
     </select>
 
     <select name="fecha" onchange="this.form.submit()">
-      <option value="">Fecha (Todas)</option>
-      <?php while ($row = mysqli_fetch_assoc($fechas)): ?>
-        <option value="<?= htmlspecialchars($row['fechas_aplicables']) ?>" <?= $row['fechas_aplicables'] === $f_fecha ? 'selected' : '' ?>>
-          <?= htmlspecialchars($row['fechas_aplicables']) ?>
+      <option value="">Años aplicables (Todos)</option>
+      <?php while ($row = $fechas->fetch_assoc()): ?>
+        <option value="<?= htmlspecialchars($row['years_aplicables']) ?>" <?= $row['years_aplicables'] === $f_fecha ? 'selected' : '' ?>>
+          <?= htmlspecialchars($row['years_aplicables']) ?>
         </option>
       <?php endwhile; ?>
     </select>
 
     <select name="tipo" onchange="this.form.submit()">
       <option value="">Tipo (Todos)</option>
-      <?php while ($row = mysqli_fetch_assoc($tipos)): ?>
+      <?php while ($row = $tipos->fetch_assoc()): ?>
         <option value="<?= htmlspecialchars($row['tipo']) ?>" <?= $row['tipo'] === $f_tipo ? 'selected' : '' ?>>
           <?= htmlspecialchars($row['tipo']) ?>
         </option>
@@ -87,10 +85,10 @@ $productos = mysqli_query($db, "SELECT * FROM productos $where_sql");
 
   <!-- Lista de productos -->
   <section class="productos-grid">
-    <?php if (mysqli_num_rows($productos) > 0): ?>
-      <?php while ($p = mysqli_fetch_assoc($productos)): ?>
+    <?php if ($productos && $productos->num_rows > 0): ?>
+      <?php while ($p = $productos->fetch_assoc()): ?>
         <article class="producto-card">
-          <img src="../scr/productos/<?= htmlspecialchars($p['imagen_url']) ?>" alt="<?= htmlspecialchars($p['nombre']) ?>" loading="lazy">
+          <img src="../scr/imagenes/productos/<?= htmlspecialchars($p['imagen_url']) ?>" alt="<?= htmlspecialchars($p['nombre']) ?>" loading="lazy">
           <h2 class="producto-nombre"><?= htmlspecialchars($p['nombre']) ?></h2>
           <p class="producto-precio">$<?= number_format($p['precio'], 2) ?></p>
           <a href="detalle_producto.php?id=<?= intval($p['id_producto']) ?>" class="btn-ver-mas">Ver más</a>

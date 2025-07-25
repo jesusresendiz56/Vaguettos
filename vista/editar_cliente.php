@@ -1,5 +1,5 @@
 <?php
-include '../modelo/conexion.php';
+//include '../modelo/conexion.php';
 include '../modelo/conexion2.php';
 
 // Elige la conexión que quieres usar: $conn o $conn2

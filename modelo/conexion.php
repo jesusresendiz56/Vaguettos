@@ -12,3 +12,4 @@ if (!$conn) {
     die("fallo la conexion: <br>" . mysqli_connect_error());
 }
    // echo "Conexión exitosa.";
+   

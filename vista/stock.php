@@ -1,5 +1,15 @@
 <?php
-include '../modelo/conexion.php';
+// --- conexión local ---
+// include '../modelo/conexion.php';   // 
+
+// --- conexión remota (Railway) ---
+include '../modelo/conexion2.php';  // 
+
+// --- Cambia esto para elegir la base de datos que deseas usar ---
+$usarConexionRemota = true;
+
+
+$conn = $usarConexionRemota ? $conn2 : $conn;
 
 // Consulta para obtener todos los productos con sus categorías
 $sql = "SELECT p.*, c.nombre AS categoria_nombre 
@@ -12,7 +22,6 @@ if (!$res) {
     die("Error en la consulta: " . $conn->error);
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -20,7 +29,6 @@ if (!$res) {
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Listado de Productos - Vaguettos</title>
 <link rel="stylesheet" href="../scr/css/stock.css" />
-
 </head>
 <body>
 
@@ -29,6 +37,7 @@ if (!$res) {
     <a href="usuarios.php" class="nav-link">Administración de Clientes</a>
     <a href="pagos.html" class="nav-link">Administración de Pagos</a>
     <a href="inventario.php" class="nav-link">Gestión de Inventario</a>
+    <a href="#" class="nav-link">Listado de Productos</a>
     <a href="cerrarSesion.html" class="nav-link">Cerrar Sesión</a>
 </nav>
 
@@ -89,4 +98,5 @@ if (!$res) {
 
 </body>
 </html>
+
 

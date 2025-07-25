@@ -1,9 +1,11 @@
 <?php
-include '../modelo/conexion.php';    // conexión local ($conn)
-include '../modelo/conexion2.php';   // conexión remota ($conn2)
+// --- Incluir conexiones ---
+include '../modelo/conexion.php';   // local
+include '../modelo/conexion2.php';  // remota
 
-// Cambia esta línea para usar la conexión deseada
-$db = $conn2; // Usa $conn para local o $conn2 para producción
+// --- Cambiar aquí a false para usar local ---
+$usarRemoto = true;
+$conn = $usarRemoto ? $conn2 : $conn;
 
 $modo = "nuevo";
 $producto = [
@@ -16,12 +18,12 @@ $producto = [
     'id_categoria' => '',
     'tipo' => '',
     'modelo_auto' => '',
-    'fechas_aplicables' => ''
+    'years_aplicables' => ''   // aquí cambié el nombre
 ];
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
-    $stmt = $db->prepare("SELECT * FROM productos WHERE id_producto = ?");
+    $stmt = $conn->prepare("SELECT * FROM productos WHERE id_producto = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $resultado = $stmt->get_result();
@@ -31,6 +33,9 @@ if (isset($_GET['id'])) {
     }
     $stmt->close();
 }
+
+// Obtener categorías
+$cats = $conn->query("SELECT id_categoria, nombre FROM categorias ORDER BY nombre");
 ?>
 
 <!DOCTYPE html>
@@ -70,8 +75,8 @@ if (isset($_GET['id'])) {
     <label for="tipo">Tipo de accesorio:</label>
     <input type="text" id="tipo" name="tipo" placeholder="Tipo de accesorio" value="<?= htmlspecialchars($producto['tipo']) ?>" required>
 
-    <label for="fechas_aplicables">Años aplicables:</label>
-    <input type="text" id="fechas_aplicables" name="fechas_aplicables" placeholder="Ej. 2015-2020" value="<?= htmlspecialchars($producto['fechas_aplicables']) ?>" required>
+    <label for="years_aplicables">Años aplicables:</label>
+    <input type="text" id="years_aplicables" name="years_aplicables" placeholder="Ej. 2015-2020" value="<?= htmlspecialchars($producto['years_aplicables']) ?>" required>
 
     <label for="stock">Cantidad en stock:</label>
     <input type="number" id="stock" name="stock" placeholder="Cantidad en stock" min="0" value="<?= htmlspecialchars($producto['stock']) ?>" required>
@@ -83,7 +88,6 @@ if (isset($_GET['id'])) {
     <select id="id_categoria" name="id_categoria" required>
         <option value="">Selecciona una categoría</option>
         <?php
-        $cats = $db->query("SELECT id_categoria, nombre FROM categorias");
         while ($cat = $cats->fetch_assoc()) {
             $selected = ($cat['id_categoria'] == $producto['id_categoria']) ? "selected" : "";
             echo "<option value='" . htmlspecialchars($cat['id_categoria']) . "' $selected>" . htmlspecialchars($cat['nombre']) . "</option>";
