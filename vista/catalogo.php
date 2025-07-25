@@ -1,5 +1,5 @@
 <?php
-// catalogo.php
+
 
 include '../modelo/conexion.php';
 

@@ -4,7 +4,7 @@ CREATE TABLE usuarios (
     nombre_completo VARCHAR(100) NOT NULL,
     usuario VARCHAR(50) NOT NULL UNIQUE,
     correo VARCHAR(100) NOT NULL UNIQUE,
-    contraseña VARCHAR(255) NOT NULL,
+    clave VARCHAR(255) NOT NULL,
     direccion TEXT,
     telefono VARCHAR(15),
     secret VARCHAR(255),
@@ -27,7 +27,7 @@ CREATE TABLE productos (
     id_categoria INT,
     tipo VARCHAR(50),
     modelo_auto VARCHAR(50),
-    años_aplicables VARCHAR(20),
+    fechas_aplicables VARCHAR(20),
     FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
 

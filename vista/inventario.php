@@ -1,0 +1,107 @@
+<?php
+include '../modelo/conexion.php';
+
+$modo = "nuevo";
+$producto = [
+    'id_producto' => '',
+    'nombre' => '',
+    'descripcion' => '',
+    'precio' => '',
+    'stock' => '',
+    'imagen_url' => '',
+    'id_categoria' => '',
+    'tipo' => '',
+    'modelo_auto' => '',
+    'fechas_aplicables' => ''
+];
+
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $stmt = $conn->prepare("SELECT * FROM productos WHERE id_producto = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    if ($resultado->num_rows === 1) {
+        $producto = $resultado->fetch_assoc();
+        $modo = "editar";
+    }
+    $stmt->close();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gestión de Inventario - Formulario</title>
+<link rel="stylesheet" href="../scr/css/inventario.css" />
+</head>
+<body>
+
+<nav>
+    <a href="indexadmin.html" class="nav-link">Inicio</a>
+    <a href="usuarios.php" class="nav-link">Administración de Clientes</a>
+    <a href="pagos.html" class="nav-link">Administración de Pagos</a>
+    <a href="inventario.php" class="nav-link">Gestión de Inventario</a>
+    <a href="stock.php" class="nav-link">Listado de Productos</a>
+    <a href="cerrarSesion.html" class="nav-link">Cerrar Sesión</a>
+</nav>
+
+<header>
+    <img src="../scr/imagenes/logo.jpg" alt="Logo Vaguettos" />
+    <h1>Gestión de Inventario</h1>
+</header>
+
+<form method="post" enctype="multipart/form-data" action="guardar_producto.php">
+    <input type="hidden" name="modo" value="<?= $modo ?>">
+    <input type="hidden" name="id_producto" value="<?= htmlspecialchars($producto['id_producto']) ?>">
+
+    <label for="nombre">Nombre del producto:</label>
+    <input type="text" id="nombre" name="nombre" placeholder="Nombre del producto" value="<?= htmlspecialchars($producto['nombre']) ?>" required>
+
+    <label for="modelo_auto">Modelo del auto:</label>
+    <input type="text" id="modelo_auto" name="modelo_auto" placeholder="Modelo del auto" value="<?= htmlspecialchars($producto['modelo_auto']) ?>" required>
+
+    <label for="tipo">Tipo de accesorio:</label>
+    <input type="text" id="tipo" name="tipo" placeholder="Tipo de accesorio" value="<?= htmlspecialchars($producto['tipo']) ?>" required>
+
+    <label for="fechas_aplicables">Años aplicables:</label>
+    <input type="text" id="fechas_aplicables" name="fechas_aplicables" placeholder="Ej. 2015-2020" value="<?= htmlspecialchars($producto['fechas_aplicables']) ?>" required>
+
+    <label for="stock">Cantidad en stock:</label>
+    <input type="number" id="stock" name="stock" placeholder="Cantidad en stock" min="0" value="<?= htmlspecialchars($producto['stock']) ?>" required>
+
+    <label for="precio">Precio del producto:</label>
+    <input type="text" id="precio" name="precio" placeholder="Precio del producto" value="<?= htmlspecialchars($producto['precio']) ?>" required>
+
+    <label for="id_categoria">Categoría:</label>
+    <select id="id_categoria" name="id_categoria" required>
+        <option value="">Selecciona una categoría</option>
+        <?php
+        $cats = $conn->query("SELECT id_categoria, nombre FROM categorias");
+        while ($cat = $cats->fetch_assoc()) {
+            $selected = ($cat['id_categoria'] == $producto['id_categoria']) ? "selected" : "";
+            echo "<option value='" . htmlspecialchars($cat['id_categoria']) . "' $selected>" . htmlspecialchars($cat['nombre']) . "</option>";
+        }
+        ?>
+    </select>
+
+    <label for="imagen">Imagen del producto:</label>
+    <input type="file" id="imagen" name="imagen" accept="image/*" <?= $modo === "nuevo" ? "required" : "" ?>>
+
+    <?php if ($modo === "editar" && !empty($producto['imagen_url'])): ?>
+        <p>Imagen actual:</p>
+        <img src="../scr/imagenes/productos/<?= htmlspecialchars($producto['imagen_url']) ?>" alt="Imagen actual" style="max-width:100px; height:auto;">
+    <?php endif; ?>
+
+    <label for="descripcion">Descripción del producto:</label>
+    <textarea id="descripcion" name="descripcion" placeholder="Descripción del producto..." rows="3"><?= htmlspecialchars($producto['descripcion']) ?></textarea>
+
+    <button type="submit" name="accion" value="modificar"><?= $modo === "nuevo" ? "Guardar" : "Actualizar" ?></button>
+</form>
+
+
+
+</body>
+</html>

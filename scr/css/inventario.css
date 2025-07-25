@@ -9,6 +9,7 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f5f7fa;
   padding: 20px;
+  color: #071739;
 }
 
 /* --------- Barra de navegación --------- */
@@ -56,132 +57,78 @@ header h1 {
 }
 
 /* --------- Formulario --------- */
-
 form {
   background-color: #ffffff;
   padding: 25px;
   border-radius: 10px;
-  margin-bottom: 30px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
 }
 
-/* Agrupación de campos por filas */
-.form-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 20px;
-  align-items: center;
-}
-
-/* Entradas y textarea */
-form input,
-form textarea,
-form button,
 form label {
-  font-size: 14px;
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #071739;
+  margin-top: 15px;
 }
 
 form input[type="text"],
 form input[type="number"],
-form input[type="date"],
 form input[type="file"],
+form select,
 form textarea {
-  flex: 1 1 250px;
+  width: 100%;
   padding: 10px;
+  font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 14px;
+  font-family: Arial, sans-serif;
+  transition: border-color 0.3s ease;
 }
 
 form input[type="file"] {
-  padding: 5px;
   border: 1px dashed #ccc;
   background-color: #f9f9f9;
+  padding: 6px;
 }
 
 form textarea {
-  width: 100%;
   resize: vertical;
   min-height: 80px;
-  font-family: Arial, sans-serif;
 }
 
-/* Botones */
+form input:focus,
+form select:focus,
+form textarea:focus {
+  border-color: #071739;
+  outline: none;
+}
+
+/* Botón principal */
 form button {
+  margin-top: 25px;
   background-color: #071739;
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 10px 18px;
+  padding: 12px 20px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: bold;
   transition: background-color 0.3s ease;
+  width: 100%;
 }
 
 form button:hover {
   background-color: #0a1c3d;
 }
 
-/* Enfocados */
-form input:focus,
-form textarea:focus {
-  border-color: #071739;
-  outline: none;
-}
-
-/* Etiqueta de imagen */
-form label {
-  font-weight: bold;
-  color: #071739;
-  min-width: 150px;
-}
-
-/* --------- Tabla --------- */
-section {
-  max-width: 1000px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-section h2 {
-  color: #071739;
-  font-size: 24px;
-  margin-bottom: 15px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-thead {
-  background-color: #071739;
-  color: white;
-}
-
-th, td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-tbody tr:hover {
-  background-color: #f1f1f1;
-  cursor: pointer;
-}
-
 /* --------- Botón Salir --------- */
 button:last-of-type {
   display: block;
-  margin: 30px auto 0;
+  margin: 30px auto 0 auto;
   background-color: red;
   color: white;
   padding: 10px 20px;
@@ -189,8 +136,24 @@ button:last-of-type {
   border: none;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
+button:last-of-type:hover {
+  background-color: #a80000;
+}
 
+/* Imagen actual */
+form p {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  color: #071739;
+  font-weight: bold;
+}
 
+form img {
+  max-width: 100px;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}

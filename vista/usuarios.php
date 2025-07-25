@@ -22,7 +22,8 @@ include '../modelo/conexion.php';
             <a href="indexadmin.html" class="nav-link">Inicio</a>
             <a href="#" class="nav-link">Administración de Clientes</a>
             <a href="pagos.html" class="nav-link">Administración de Pagos</a>
-            <a href="inventario.html" class="nav-link">Gestión de Inventario</a>
+            <a href="inventario.php" class="nav-link">Gestión de Inventario</a>
+            <a href="stock.php" class="nav-link">Listado de Productos</a>
             <a href="cerrarSesion.html" class="nav-link">Cerrar Sesión</a>
         </nav>
 
@@ -63,11 +64,11 @@ include '../modelo/conexion.php';
                 $condicion = "WHERE usuario LIKE '%$busqueda%' OR correo LIKE '%$busqueda%'";
             }
 
-            // Consulta a la base de datos
+         
             $sql = "SELECT id_usuario, usuario, direccion, correo, telefono FROM usuarios $condicion";
             $resultado = $conn->query($sql);
 
-            // Mostrar los resultados en la tabla
+            
             while ($row = $resultado->fetch_assoc()) {
                 echo "<tr>
                         <td>{$row['id_usuario']}</td>
