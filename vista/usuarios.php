@@ -37,7 +37,7 @@ include '../modelo/conexion.php';
         <form method="post">
             <div class="btn">
                 <input type="search" name="buscarCliente" placeholder="Buscar Cliente...">
-                <button type="submit" name="buscar">🔎</button>
+                <button type="submit" name="buscar"><img src='../scr/imagenes/busqueda.png' alt='Buscar' width='20' height='20'></button>
             </div>
         </form>
     </div><br>

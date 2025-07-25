@@ -95,7 +95,7 @@ input[type="search"]:focus {
 }
 
 button[type="submit"] {
-  background-color: #071739;
+  background-color: #4B6382; 
   color: white;
   border: none;
   border-radius: 6px;
