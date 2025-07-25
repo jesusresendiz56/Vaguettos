@@ -20,28 +20,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["accion"]) && $_POST["
         if (move_uploaded_file($imagen_temp, $ruta_destino)) {
             $sql = "INSERT INTO productos (nombre, descripcion, precio, stock, imagen_url, id_categoria, tipo, modelo_auto, fechas_aplicables)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $conexion->prepare($sql);
+            $stmt = $conn->prepare($sql);
             $stmt->bind_param("ssdisisss", $nombre, $descripcion, $precio, $stock, $imagen_nueva, $id_categoria, $tipo, $modelo_auto, $fechas_aplicables);
             $stmt->execute();
             $stmt->close();
             header("Location: ../vista/inventario.php");
+            exit;
         }
     } else {
         if (!empty($imagen_nueva)) {
             move_uploaded_file($imagen_temp, $ruta_destino);
             $sql = "UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, imagen_url=?, id_categoria=?, tipo=?, modelo_auto=?, fechas_aplicables=? WHERE id_producto=?";
-            $stmt = $conexion->prepare($sql);
+            $stmt = $conn->prepare($sql);
             $stmt->bind_param("ssdisisssi", $nombre, $descripcion, $precio, $stock, $imagen_nueva, $id_categoria, $tipo, $modelo_auto, $fechas_aplicables, $id_producto);
         } else {
             $sql = "UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, id_categoria=?, tipo=?, modelo_auto=?, fechas_aplicables=? WHERE id_producto=?";
-            $stmt = $conexion->prepare($sql);
+            $stmt = $conn->prepare($sql);
             $stmt->bind_param("ssdiisssi", $nombre, $descripcion, $precio, $stock, $id_categoria, $tipo, $modelo_auto, $fechas_aplicables, $id_producto);
         }
         $stmt->execute();
         $stmt->close();
         header("Location: ../vista/inventario.php");
+        exit;
     }
 
-    $conexion->close();
+    $conn->close();
 }
 ?>

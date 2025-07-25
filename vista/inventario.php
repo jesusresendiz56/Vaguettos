@@ -53,7 +53,7 @@ if (isset($_GET['id'])) {
     <h1>Gestión de Inventario</h1>
 </header>
 
-<form method="post" enctype="multipart/form-data" action="guardar_producto.php">
+<form method="post" enctype="multipart/form-data" action="../controlador/guardar_producto.php">
     <input type="hidden" name="modo" value="<?= $modo ?>">
     <input type="hidden" name="id_producto" value="<?= htmlspecialchars($producto['id_producto']) ?>">
 
