@@ -1,5 +1,5 @@
 <?php 
-include '../modelo/conexion.php';   // $conn (local)
+//include '../modelo/conexion.php';   // $conn (local)
 include '../modelo/conexion2.php';  // $conn2 (remota)
 
 // Puedes cambiar esta línea para usar la conexión deseada:

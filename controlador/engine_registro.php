@@ -4,6 +4,7 @@ session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 require_once '../modelo/conexion.php';
+require_once '../modelo/conexion2.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 

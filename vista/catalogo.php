@@ -1,6 +1,6 @@
 <?php
 // Conexión local y remota
-include '../modelo/conexion.php';   // $conn (local)
+//include '../modelo/conexion.php';   // $conn (local)
 include '../modelo/conexion2.php';  // $conn2 (remota)
 
 // Puedes elegir aquí cuál conexión usar:
@@ -9,7 +9,7 @@ $db = $conn2;      // Remota
 
 // Obtener opciones únicas para los filtros 
 $submarcas = mysqli_query($db, "SELECT DISTINCT modelo_auto FROM productos ORDER BY modelo_auto");
-$fechas = mysqli_query($db, "SELECT DISTINCT fechas_aplicables FROM productos ORDER BY fechas_aplicables");
+//$fechas = mysqli_query($db, "SELECT DISTINCT fechas_aplicables FROM productos ORDER BY fechas_aplicables");
 $tipos = mysqli_query($db, "SELECT DISTINCT tipo FROM productos ORDER BY tipo");
 
 $f_submarca = $_GET['modelo_auto'] ?? '';
