@@ -27,7 +27,7 @@ CREATE TABLE productos (
     id_categoria INT,
     tipo VARCHAR(50),
     modelo_auto VARCHAR(50),
-    fechas_aplicables VARCHAR(20),
+    years_aplicables VARCHAR(20),
     FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
 
