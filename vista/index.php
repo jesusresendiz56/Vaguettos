@@ -25,6 +25,8 @@ $usuario = $_SESSION['usuario'] ?? null;
   <title>Vaguettos Accesorios</title>
   <link rel="stylesheet" href="../scr/css/index.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -126,7 +128,8 @@ $usuario = $_SESSION['usuario'] ?? null;
 
   <div class="ubicacion">
     <h3>Ubicación</h3>
-    <img src="../scr/mapa.png" alt="Ubicación">
+    
+    <div id="mapa"></div>
   </div>
 </section>
 
