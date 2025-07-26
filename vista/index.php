@@ -50,8 +50,8 @@ $usuario = $_SESSION['usuario'] ?? null;
 
   <nav class="main-nav">
     <a href="index.php">Inicio</a>
-    <a href="catalogo.php">Catálogo</a>
-    <a href="carrito.php">Carrito</a>
+    <a href="catalogo.php">Catálogo de Productos</a>
+    <a href="carrito.html">Carrito de Compras</a>
     <a href="#">Editar Perfil</a>
   </nav>
 </header>
@@ -117,10 +117,10 @@ $usuario = $_SESSION['usuario'] ?? null;
   <div class="servicios">
     <h3>Nuestros Servicios</h3>
     <ul>
-      <li>Instalación de accesorios</li>
-      <li>Servicio técnico especializado</li>
+      <li>Compra en Línea rapidá y segura</li>
+      <li>Servicio técnico especializado a distancia</li>
       <li>Envío a domicilio</li>
-      <li>Compra fácil, segura y garantizada</li>
+      <li>Garantía de satisfacción en cada pedido</li>
     </ul>
   </div>
 

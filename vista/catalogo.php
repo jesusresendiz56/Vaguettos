@@ -44,9 +44,9 @@ $productos = $conn->query("SELECT * FROM productos $where_sql");
   <nav>
     <a href="index.php" class="nav-link">Inicio</a>
     <a href="#" class="nav-link">Catálogo de Productos</a>
-    <a href="#" class="nav-link">Carrito de Compras</a>
+    <a href="carrito.html" class="nav-link">Carrito de Compras</a>
     <a href="#" class="nav-link">Editar Perfil</a>
-    <a href="cerrarSesion.html" class="nav-link">Cerrar Sesión</a>
+  
   </nav>
 </header>
 
