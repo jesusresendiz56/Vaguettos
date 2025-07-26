@@ -1,9 +1,9 @@
 <?php
 // conexión a base de datos remota (Railway)
 $host = 'trolley.proxy.rlwy.net';
-$port = 49388;
+$port = 49255;
 $user = 'root';
-$pass = 'OSjIyZStEWbFPNPMCcKZEMuPIxNnyjNL';
+$pass = 'fdKPJgcpqXsiSRUcwWBYWXYIbzaaZKyy';
 $dbname = 'railway';
 
 $conn2 = new mysqli($host, $user, $pass, $dbname, $port);
