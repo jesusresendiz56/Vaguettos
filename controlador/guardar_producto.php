@@ -1,10 +1,10 @@
 <?php
 // --- Incluir conexiones ---
 include '../modelo/conexion.php';   // conexión local ($conn)
-//include '../modelo/conexion2.php';  // conexión remota ($conn2)
+include '../modelo/conexion2.php';  // conexión remota ($conn2)
 
 // --- Cambiar aquí a false para usar local ---
-$usarRemoto = false;
+$usarRemoto = true;
 $db = $usarRemoto ? $conn2 : $conn;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["accion"]) && $_POST["accion"] === "modificar") {

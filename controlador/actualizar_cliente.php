@@ -1,9 +1,9 @@
 <?php
 include '../modelo/conexion.php';
-//include '../modelo/conexion2.php';
+include '../modelo/conexion2.php';
 
 // Cambia aquí para usar la conexión deseada:
-$db = $conn; // por ejemplo, conexión remota
+$db = $conn2; // por ejemplo, conexión remota
 // $db = $conn; // conexión local
 
 if (isset($_POST['actualizar'])) {

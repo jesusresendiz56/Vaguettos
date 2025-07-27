@@ -3,10 +3,10 @@
 include '../modelo/conexion.php';
 
 // --- conexión remota (Railway) ---
-// include '../modelo/conexion2.php';
+ include '../modelo/conexion2.php';
 
 
-$usarConexionRemota = false;
+$usarConexionRemota = true;
 
 $conn = $usarConexionRemota ? $conn2 : $conn;
 
