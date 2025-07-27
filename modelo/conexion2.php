@@ -1,9 +1,9 @@
 <?php
 // conexión a base de datos remota (Railway)
 $host = "nozomi.proxy.rlwy.net";
-$port = 49255;
+$port = 34046;
 $user = 'root';
-$pass = 'fdKPJgcpqXsiSRUcwWBYWXYIbzaaZKyy';
+$pass = 'DxrJBPoUPakOytrQMCKfRsjQfjYCwgXd';
 $dbname = 'railway';
 
 $conn2 = new mysqli($host, $user, $pass, $dbname, $port);

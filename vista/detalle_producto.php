@@ -1,6 +1,6 @@
 <?php
 
-include '../modelo/conexion.php';   // conexión local ($conn)
+//include '../modelo/conexion.php';   // conexión local ($conn)
 include '../modelo/conexion2.php';  // conexión remota ($conn2)
 
 
