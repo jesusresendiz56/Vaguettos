@@ -1,9 +1,9 @@
 <?php
 // --- conexión local ---
-// include '../modelo/conexion.php';   // 
+include '../modelo/conexion.php';   // conexión local ($conn)
 
 // --- conexión remota (Railway) ---
-include '../modelo/conexion2.php';  // 
+include '../modelo/conexion2.php';  // conexión remota ($conn2)
 
 // --- Cambia esto para elegir la base de datos que deseas usar ---
 $usarConexionRemota = true;
@@ -81,7 +81,7 @@ if (!$res) {
                             <img src='../scr/imagenes/editarproducto.png' alt='Editar' width='20' height='20'>
                         </a></td>
                         <td>
-                            <a href="eliminar_producto.php?id=<?= $row['id_producto'] ?>" onclick="return confirm('¿Eliminar producto?');">
+                            <a href="../controlador/eliminar_producto.php?id=<?= $row['id_producto'] ?>" onclick="return confirm('¿Eliminar producto?');">
                                 <img src='../scr/imagenes/eliminar.png' alt='Eliminar' width='20' height='20'>
                             </a>
                         </td>
