@@ -1,10 +1,10 @@
 <?php
 
 include '../modelo/conexion.php';   // conexión local ($conn)
-include '../modelo/conexion2.php';  // conexión remota ($conn2)
+//include '../modelo/conexion2.php';  // conexión remota ($conn2)
 
 
-$usarRemoto = true;
+$usarRemoto = false;
 $db = $usarRemoto ? $conn2 : $conn;
 
 

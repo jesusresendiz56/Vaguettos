@@ -1,9 +1,9 @@
 <?php
-//include '../modelo/conexion.php';
-include '../modelo/conexion2.php';
+include '../modelo/conexion.php';
+//include '../modelo/conexion2.php';
 
 // Elige la conexión que quieres usar: $conn o $conn2
-$db = $conn2;  // Cambia a $conn si quieres usar la conexión local
+$db = $conn;  // Cambia a $conn2 si quieres usar la conexión remota
 
 $id = (int)($_GET['id'] ?? 0);
 

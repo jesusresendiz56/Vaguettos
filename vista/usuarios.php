@@ -1,9 +1,9 @@
 <?php 
-//include '../modelo/conexion.php';   // $conn (local)
-include '../modelo/conexion2.php';  // $conn2 (remota)
+include '../modelo/conexion.php';   // $conn (local)
+//include '../modelo/conexion2.php';  // $conn2 (remota)
 
 // Puedes cambiar esta línea para usar la conexión deseada:
-$db = $conn2; // usa $conn para local
+$db = $conn; // usa $conn2 para remoto
 ?>
 
 <!DOCTYPE html>

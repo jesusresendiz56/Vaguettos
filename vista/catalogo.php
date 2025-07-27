@@ -1,10 +1,10 @@
 <?php
 // --- Incluir conexiones ---
 include '../modelo/conexion.php';   // local
-include '../modelo/conexion2.php';  // remota
+//include '../modelo/conexion2.php';  // remota
 
 // --- Cambiar aquí a false para usar local ---
-$usarRemoto = true;
+$usarRemoto = false;
 $conn = $usarRemoto ? $conn2 : $conn;
 
 // Obtener opciones únicas para los filtros

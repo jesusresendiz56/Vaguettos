@@ -1,9 +1,9 @@
 <?php
-//include '../modelo/conexion.php';     // conexión local ($conn)
-include '../modelo/conexion2.php';    // conexión remota ($conn2)
+include '../modelo/conexion.php';     // conexión local ($conn)
+//include '../modelo/conexion2.php';    // conexión remota ($conn2)
 
 // Cambiar aquí para usar la conexión deseada
-$db = $conn2;
+$db = $conn;
 
 if (isset($_GET['id'])) {
     $id = (int) $_GET['id'];
