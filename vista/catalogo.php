@@ -1,12 +1,8 @@
 <?php
 // --- Incluir conexiones ---
-<<<<<<< HEAD
-include '../modelo/conexion.php';   // local
-//include '../modelo/conexion2.php';  // remota
-=======
 //include '../modelo/conexion.php';   // local
 include '../modelo/conexion2.php';  // remota
->>>>>>> 6f2435c0b32dfc9757902a616ac07086123bae1e
+
 
 // --- Cambiar aquí a false para usar local ---
 $usarRemoto = false;
