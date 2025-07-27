@@ -1,45 +1,48 @@
 <?php
-session_start(); // Iniciar sesión
-require '../modelo/conexion.php'; // Asegúrate de tener una conexión activa
+session_start();
+require_once '../modelo/conexion2.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $usuario_correo = $_POST['usuario_correo'];
-    $contraseña = $_POST['contraseña'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['usuario_correo']) && !empty($_POST['clave'])) {
+        $input = trim($_POST['usuario_correo']);
+        $clave = $_POST['clave'];
 
-    // Validar campos vacíos
-    if (empty($usuario_correo) || empty($contraseña)) {
-        die("❌ Por favor, completa todos los campos.");
-    }
-
-    // Buscar al usuario por nombre de usuario o correo
-    $stmt = $conn->prepare("SELECT id_usuario, nombre_completo, usuario, correo, contraseña FROM usuarios WHERE usuario = ? OR correo = ?");
-    $stmt->bind_param("ss", $usuario_correo, $usuario_correo);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-
-    if ($resultado->num_rows === 1) {
-        $usuario = $resultado->fetch_assoc();
-
-        // Verificar contraseña
-        if (password_verify($contraseña, $usuario['contraseña'])) {
-            // Guardar datos en sesión
-            $_SESSION['id_usuario'] = $usuario['id_usuario'];
-            $_SESSION['nombre_completo'] = $usuario['nombre_completo'];
-            $_SESSION['usuario'] = $usuario['usuario'];
-
-            // Redirigir al panel principal o inicio
-            header("Location: ../vista/inicio.php");
-            exit();
-        } else {
-            echo "❌ Contraseña incorrecta.";
+        // Preparar consulta para buscar usuario por usuario o correo
+        $stmt = $conn2->prepare("SELECT id_usuario, usuario, correo, clave, secret FROM usuarios WHERE usuario = ? OR correo = ?");
+        if (!$stmt) {
+            die("Error en la preparación: " . $conn2->error);
         }
-    } else {
-        echo "❌ Usuario o correo no encontrado.";
-    }
+        $stmt->bind_param("ss", $input, $input);
+        $stmt->execute();
+        $stmt->store_result();
 
-    $stmt->close();
-    $conn->close();
-} else {
-    echo "Acceso no autorizado.";
+        if ($stmt->num_rows === 1) {
+            $stmt->bind_result($id_usuario, $usuario, $correo, $clave_guardada, $secret);
+            $stmt->fetch();
+
+            // Aquí la comparación, según si tienes hash o no
+            // Por ejemplo, si no usas hash:
+            if ($clave === $clave_guardada) {
+                $_SESSION['id_usuario'] = $id_usuario;
+                $_SESSION['usuario'] = $usuario;
+                $_SESSION['secret'] = $secret;
+
+                header("Location: ../vista/verificacion.php");
+                exit();
+            } else {
+                $_SESSION['error_login'] = "Contraseña incorrecta.";
+            }
+        } else {
+            $_SESSION['error_login'] = "Usuario o correo no encontrado.";
+        }
+
+        $stmt->close();
+    } else {
+        $_SESSION['error_login'] = "Por favor llena ambos campos.";
+    }
+    header("Location: ../vista/login.php");
+    exit();
 }
+
+$conn2->close();
 ?>

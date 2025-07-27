@@ -1,6 +1,5 @@
 <?php
-session_start();
-?>
+session_start(); ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -20,14 +19,15 @@ session_start();
     ?>
 
     <form method="POST" action="../controlador/engine_login.php">
-      <label for="usuario">Usuario</label>
-      <input type="text" id="usuario" name="usuario" placeholder="Usuario" required />
-      
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password" placeholder="Contraseña" required />
-      
+      <label for="usuario_correo">Usuario o correo</label>
+      <input type="text" id="usuario_correo" name="usuario_correo" placeholder="Usuario o correo" required />
+
+      <label for="clave">Contraseña</label>
+      <input type="password" id="clave" name="clave" placeholder="Contraseña" required />
+
       <button type="submit">Ingresar</button>
     </form>
+
     <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
   </div>
 

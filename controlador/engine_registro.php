@@ -1,53 +1,37 @@
 <?php
 session_start();
-
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-require_once '../modelo/conexion.php';
+//require_once '../modelo/conexion.php';
 require_once '../modelo/conexion2.php';
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['nombre_completo']) && !empty($_POST['usuario']) && !empty($_POST['correo']) 
+        && !empty($_POST['clave']) && !empty($_POST['direccion']) && !empty($_POST['telefono'])) {
 
-    // Verifica que se enviaron ambos campos
-    if (!empty($_POST['usuario']) && !empty($_POST['password'])) {
-        $usuario = trim($_POST['usuario']); // elimina espacios en blanco
-        $password = $_POST['password'];
+        $nombreCompleto = trim($_POST['nombre_completo']);
+        $usuario = trim($_POST['usuario']);
+        $correo = trim($_POST['correo']);
+        $clave = $_POST['clave'];  // **sin hash**
+        $direccion = trim($_POST['direccion']);
+        $telefono = trim($_POST['telefono']);
 
-        // Consulta segura con prepared statements
-        $stmt = $conn->prepare("SELECT id_usuario, contraseña, secret FROM usuarios WHERE usuario = ?");
+        $secret2fa = ''; // Puedes generar aquí si quieres
+
+        $stmt = $conn2->prepare("INSERT INTO usuarios (nombre_completo, usuario, correo, clave, direccion, telefono, secret) VALUES (?, ?, ?, ?, ?, ?, ?)");
         if (!$stmt) {
-            die("Error en la preparación de la consulta: " . $conn->error);
+            die("Error en la preparación: " . $conn2->error);
         }
-        $stmt->bind_param("s", $usuario);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if ($stmt->num_rows === 1) {
-            $stmt->bind_result($id_usuario, $hash, $secret);
-            $stmt->fetch();
-
-            // Verifica la contraseña
-            if (password_verify($password, $hash)) {
-                // Asigna variables de sesión
-                $_SESSION['id_usuario'] = $id_usuario;
-                $_SESSION['usuario'] = $usuario;
-                $_SESSION['secret'] = $secret;
-
-                // Redirección segura
-                header("Location: ../vista/verificar_2fa.php");
-                exit();
-            } else {
-                echo "Contraseña incorrecta.";
-            }
+        $stmt->bind_param("sssssss", $nombreCompleto, $usuario, $correo, $clave, $direccion, $telefono, $secret2fa);
+        if ($stmt->execute()) {
+            header("Location: ../vista/login.php");
+            exit();
         } else {
-            echo "Usuario no encontrado.";
+            echo "Error al registrar usuario: " . $stmt->error;
         }
-
         $stmt->close();
     } else {
-        echo "Datos incompletos. Por favor, llena ambos campos.";
+        echo "Por favor llena todos los campos.";
     }
 }
 
-$conn->close();
+$conn2->close();
 ?>

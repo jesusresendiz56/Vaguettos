@@ -12,7 +12,7 @@ $conn2 = new mysqli($host, $usuario, $contrasena, $base_datos, $puerto);
 if ($conn2->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 } else {
-    echo " Conexión exitosa a Railway";
+    " Conexión exitosa a Railway";
 }
 ?>
 

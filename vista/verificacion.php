@@ -1,31 +1,46 @@
 <?php
-session_start();
-require '../pdo_2fa/GoogleAuthenticator.php';
+session_start(); // Iniciar sesión para acceder a $_SESSION
+require_once __DIR__ . '/../vendor/autoload.php';
 
-if (!isset($_SESSION['secret'])) {
-    echo "❌ No se ha encontrado el secreto.";
-    exit();
-}
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 
-$ga = new PHPGangsta_GoogleAuthenticator(); 
-$qrCodeUrl = $ga->getQRCodeGoogleUrl('Vaguettos', $_SESSION['secret']);
+// Cambia 'usuario' por el índice correcto que usas en tu sesión
+$usuario = $_SESSION['usuario'] ?? 'usuario_default@example.com';
+
+// La clave secreta debería venir de la base de datos o ser dinámica
+$secret = 'JBSWY3DPEHPK3PXP'; 
+
+$otpauthUrl = "otpauth://totp/{$usuario}?secret={$secret}&issuer=MiApp";
+
+$qrCode = new QrCode($otpauthUrl);
+
+$writer = new PngWriter();
+$result = $writer->write($qrCode);
+
+$qrCodeBase64 = base64_encode($result->getString());
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Configurar 2FA</title>
 </head>
 <body>
   <h2>Configurar Verificación en Dos Pasos</h2>
   <p>Escanea este código QR con Google Authenticator:</p>
-  <img src="<?php echo $qrCodeUrl; ?>" alt="Código QR 2FA">
+  <img src="data:image/png;base64,<?= $qrCodeBase64 ?>" alt="Código QR 2FA" />
 
   <p>Después, ingresa el código que aparece en la app:</p>
-  <form method="POST" action="../controlador/verificar_2fa.php">
-    <input type="text" name="codigo_2fa" placeholder="Código 2FA" required>
+  <form method="POST" action="../vista/index.php">
+    <input type="text" name="codigo" placeholder="Código 2FA" required />
     <button type="submit">Verificar</button>
   </form>
+
+  <?php if (isset($_GET['error']) && $_GET['error'] === 'codigo'): ?>
+    <p style="color:red;"> Código incorrecto. Inténtalo de nuevo.</p>
+  <?php endif; ?>
 </body>
 </html>
+
