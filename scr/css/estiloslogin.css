@@ -10,6 +10,7 @@ body.container {
   min-height: 100vh;
 }
 
+/* Sección del formulario */
 .form-section {
   flex: 1;
   background-color: #edf0ff;
@@ -62,6 +63,7 @@ a {
   font-weight: bold;
 }
 
+/* Sección del logo o imagen decorativa */
 .logo-section {
   flex: 1;
   background-color: #03143e;

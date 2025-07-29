@@ -6,7 +6,7 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 
 // Cambia 'usuario' por el índice correcto que usas en tu sesión
-$usuario = $_SESSION['usuario'] ?? 'usuario_default@example.com';
+$usuario = $_SESSION['usuario'] ?? 'defaultUser';
 
 // La clave secreta debería venir de la base de datos o ser dinámica
 $secret = 'JBSWY3DPEHPK3PXP'; 
@@ -26,21 +26,36 @@ $qrCodeBase64 = base64_encode($result->getString());
 <head>
   <meta charset="UTF-8" />
   <title>Configurar 2FA</title>
+  <link rel="stylesheet" href="../scr/css/verificar.css">
 </head>
-<body>
-  <h2>Configurar Verificación en Dos Pasos</h2>
-  <p>Escanea este código QR con Google Authenticator:</p>
-  <img src="data:image/png;base64,<?= $qrCodeBase64 ?>" alt="Código QR 2FA" />
+<body class="container">
 
-  <p>Después, ingresa el código que aparece en la app:</p>
-  <form method="POST" action="../vista/index.php">
-    <input type="text" name="codigo" placeholder="Código 2FA" required />
-    <button type="submit">Verificar</button>
-  </form>
+  <!-- Sección visual a la derecha -->
+  <div class="logo-section left-rounded">
+    <img src="../scr/imagenes/logo.jpg" alt="Logo decorativo" class="logo">
+  </div>
 
-  <?php if (isset($_GET['error']) && $_GET['error'] === 'codigo'): ?>
-    <p style="color:red;"> Código incorrecto. Inténtalo de nuevo.</p>
-  <?php endif; ?>
+  <!-- Sección del formulario -->
+  <div class="form-section">
+  <div class="container">
+
+    <p>Escanea este código QR con Google Authenticator:</p>
+    <img src="data:image/png;base64,<?= $qrCodeBase64 ?>" alt="Código QR 2FA" />
+
+    <p>Después, ingresa el código que aparece en la app:</p>
+    <form method="POST" action="../vista/index.php">
+      <input type="text" name="codigo" placeholder="Código 2FA" required />
+      <button type="submit">Verificar</button>
+    </form>
+
+    <?php if (isset($_GET['error']) && $_GET['error'] === 'codigo'): ?>
+      <p class="error">Código incorrecto. Inténtalo de nuevo.</p>
+    <?php endif; ?>
+
+  </div>
+</div>
+
+
 </body>
 </html>
 

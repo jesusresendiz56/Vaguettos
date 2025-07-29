@@ -1,46 +1,109 @@
-body {
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(to right, #2193b0, #6dd5ed);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sección del formulario */
+.form-section {
+  flex: 1;
+  background-color: #edf0ff;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-section h2 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #03143e;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  padding: 8px;
+  border-radius: 20px;
+  border: 1px solid #888;
+  margin-top: 5px;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #03143e;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #021030;
+}
+
+p {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+}
+
+form p {
+  margin-top: 10px;
+  color: red;
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+  color: #03143e;
+  font-weight: bold;
+}
+
+/* Imagen del QR */
+.form-section img {
+  align-self: center;
+  max-width: 300px;
+  height: auto;
+  margin: 20px 0;
+}
+
+/* Sección del logo o decoración */
+.logo-section {
+  flex: 0.6;
+  background-color: #03143e;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  margin: 0;
 }
-
-.container {
-  background-color: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.25);
+.form-section .container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 600px; /* Aumentado de 400px a 600px */
   width: 100%;
-  max-width: 380px;
+  margin: 0 auto;
   text-align: center;
 }
 
-h2 {
-  color: #0d47a1;
-  margin-bottom: 20px;
+.logo-section.left-rounded {
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
 }
 
-input[type="number"],
-input[type="submit"] {
-  width: 100%;
-  padding: 12px;
-  margin: 12px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
-
-input[type="submit"] {
-  background-color: #1976d2;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-input[type="submit"]:hover {
-  background-color: #0b58a2;
+.logo {
+  max-width: 60%;
+  height: auto;
 }
