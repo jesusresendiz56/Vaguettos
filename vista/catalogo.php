@@ -50,7 +50,7 @@ $productos = $conn->query($query);
   <nav>
     <a href="index.php" class="nav-link">Inicio</a>
     <a href="#" class="nav-link">Catálogo de Productos</a>
-    <a href="carrito.html" class="nav-link">Carrito de Compras</a>
+    <a href="carrito.php" class="nav-link">Carrito de Compras</a>
     <a href="#" class="nav-link">Editar Perfil</a>
   </nav>
 </header>

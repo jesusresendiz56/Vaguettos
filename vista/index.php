@@ -53,7 +53,7 @@ $usuario = $_SESSION['usuario'] ?? null;
   <nav class="main-nav">
     <a href="index.php">Inicio</a>
     <a href="catalogo.php">Catálogo de Productos</a>
-    <a href="carrito.html">Carrito de Compras</a>
+    <a href="carrito.php">Carrito de Compras</a>
     <a href="#">Editar Perfil</a>
   </nav>
 </header>
