@@ -18,6 +18,7 @@ $res = $conn->query($sql);
     <a href="index.php" class="nav-link">Inicio</a>
     <a href="catalogo.php" class="nav-link">Catalogo de Productos</a>
     <a href="#" class="nav-link">Carrito de Compras</a>
+    
     <a href="cerrarSesion.html" class="nav-link">Cerrar Sesión</a>
 </nav>
 
