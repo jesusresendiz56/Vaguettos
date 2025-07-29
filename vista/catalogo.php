@@ -1,21 +1,25 @@
 <?php
 // --- Incluir conexiones ---
-//include '../modelo/conexion.php';   // local
-include '../modelo/conexion2.php';  // remota
+include '../modelo/conexion2.php';  // conexión remota
 
-
-// --- Cambiar aquí a false para usar local ---
+// --- Cambiar aquí a false para usar local si lo deseas ---
 $usarRemoto = true;
 $conn = $usarRemoto ? $conn2 : $conn;
 
-// Obtener opciones únicas para los filtros
-$submarcas = $conn->query("SELECT DISTINCT modelo_auto FROM productos ORDER BY modelo_auto");
-$fechas = $conn->query("SELECT DISTINCT years_aplicables FROM productos ORDER BY years_aplicables");
-$tipos = $conn->query("SELECT DISTINCT tipo FROM productos ORDER BY tipo");
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
 
+// Obtener filtros únicos
+$submarcas = $conn->query("SELECT DISTINCT modelo_auto FROM productos ORDER BY modelo_auto");
+$fechas    = $conn->query("SELECT DISTINCT years_aplicables FROM productos ORDER BY years_aplicables");
+$tipos     = $conn->query("SELECT DISTINCT tipo FROM productos ORDER BY tipo");
+
+// Filtros por URL
 $f_submarca = $_GET['modelo_auto'] ?? '';
-$f_fecha = $_GET['fecha'] ?? '';
-$f_tipo = $_GET['tipo'] ?? '';
+$f_fecha    = $_GET['fecha'] ?? '';
+$f_tipo     = $_GET['tipo'] ?? '';
 
 $where = [];
 if ($f_submarca !== '') $where[] = "modelo_auto = '" . $conn->real_escape_string($f_submarca) . "'";
@@ -24,7 +28,8 @@ if ($f_tipo !== '')     $where[] = "tipo = '" . $conn->real_escape_string($f_tip
 
 $where_sql = count($where) > 0 ? "WHERE " . implode(' AND ', $where) : '';
 
-$productos = $conn->query("SELECT * FROM productos $where_sql");
+$query = "SELECT * FROM productos $where_sql";
+$productos = $conn->query($query);
 ?>
 
 <!DOCTYPE html>
@@ -47,7 +52,6 @@ $productos = $conn->query("SELECT * FROM productos $where_sql");
     <a href="#" class="nav-link">Catálogo de Productos</a>
     <a href="carrito.html" class="nav-link">Carrito de Compras</a>
     <a href="#" class="nav-link">Editar Perfil</a>
-  
   </nav>
 </header>
 
@@ -84,6 +88,9 @@ $productos = $conn->query("SELECT * FROM productos $where_sql");
     </select>
   </form>
 
+  <!-- Contador de productos para depurar -->
+  <p>Total productos encontrados: <?= $productos ? $productos->num_rows : 0 ?></p>
+
   <!-- Lista de productos -->
   <section class="productos-grid">
     <?php if ($productos && $productos->num_rows > 0): ?>
@@ -93,6 +100,7 @@ $productos = $conn->query("SELECT * FROM productos $where_sql");
           <h2 class="producto-nombre"><?= htmlspecialchars($p['nombre']) ?></h2>
           <p class="producto-precio">$<?= number_format($p['precio'], 2) ?></p>
           <a href="detalle_producto.php?id=<?= intval($p['id_producto']) ?>" class="btn-ver-mas">Ver más</a>
+          <a href="carrito.html?agregar=<?= intval($p['id_producto']) ?>" class="btn-ver-mas">Agregar al carrito</a>
         </article>
       <?php endwhile; ?>
     <?php else: ?>
