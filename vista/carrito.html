@@ -1,30 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Carrito de Compras</title>
-  <link rel="stylesheet" href="../scr/css/carrito.css" />
-</head>
 <body>
   <h1>prototipo carrito</h1>
 
-  <div class="productos">
-    <div class="producto">
-      <h3>Producto 1</h3>
-      <p>$10</p>
-      <button onclick="agregarAlCarrito('Producto 1', 10)">Agregar</button>
-    </div>
-    <div class="producto">
-      <h3>Producto 2</h3>
-      <p>$20</p>
-      <button onclick="agregarAlCarrito('Producto 2', 20)">Agregar</button>
-    </div>
-    <div class="producto">
-      <h3>Producto 3</h3>
-      <p>$15</p>
-      <button onclick="agregarAlCarrito('Producto 3', 15)">Agregar</button>
-    </div>
+  <div class="productos" id="contenedor-productos">
+    <!-- Aquí se insertan dinámicamente -->
   </div>
 
   <h2>Carrito</h2>
@@ -52,8 +30,29 @@
         lista.appendChild(li);
       });
 
-      totalElemento.textContent = total;
+      totalElemento.textContent = total.toFixed(2);
     }
+
+    // 🔄 Cargar productos desde PHP
+    window.onload = function () {
+      fetch('../modelo/cargar_productos.php')
+        .then(response => response.json())
+        .then(productos => {
+          const contenedor = document.getElementById('contenedor-productos');
+          productos.forEach(p => {
+            const div = document.createElement('div');
+            div.classList.add('producto');
+            div.innerHTML = `
+              <h3>${p.nombre}</h3>
+              <p>$${p.precio}</p>
+              <button onclick="agregarAlCarrito('${p.nombre}', ${p.precio})">Agregar</button>
+            `;
+            contenedor.appendChild(div);
+          });
+        })
+        .catch(err => {
+          console.error("Error cargando productos:", err);
+        });
+    };
   </script>
 </body>
-</html>
