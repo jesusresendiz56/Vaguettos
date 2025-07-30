@@ -1,5 +1,5 @@
 <?php
-include '../modelo/conexion.php';
+//include '../modelo/conexion.php';
 include '../modelo/conexion2.php';
 
 // Cambia aquí para usar la conexión deseada:
