@@ -127,7 +127,6 @@ $usuario = $_SESSION['usuario'] ?? null;
   </div>
 
   <div class="ubicacion">
-<<<<<<< HEAD
   <h3>Ubicación</h3>
   <div id="mapa" style="width: 400px; height: 400px; border-radius: 10px; border: 2px solid #c2c7d0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
 </div>
@@ -150,10 +149,6 @@ $usuario = $_SESSION['usuario'] ?? null;
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdpfD74JIrCWQHOzMWlJSgxl-20HZC_Y4&callback=initMap">
 </script>
 
-=======
-    <h3>Ubicación</h3>
-  </div>
->>>>>>> 342c80481e81430f1cb53a435365b9fe07364158
 </section>
 
 <!-- =================== REDES SOCIALES =================== -->
