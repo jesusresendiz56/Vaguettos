@@ -31,7 +31,7 @@ $res = $conn2->query($sql);
 <head>
     <meta charset="UTF-8">
     <title>Carrito de Compras - Vaguettos</title>
-    <link rel="stylesheet" href="../scr/css/stock.css" />
+    <link rel="stylesheet" href="../scr/css/carrito.css" />
 </head>
 <body>
 
