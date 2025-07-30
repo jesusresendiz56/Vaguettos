@@ -1,6 +1,6 @@
 <?php
 // --- conexión local ---
-include '../modelo/conexion.php';   // conexión local ($conn)
+//include '../modelo/conexion.php';   // conexión local ($conn)
 
 // --- conexión remota (Railway) ---
 include '../modelo/conexion2.php';  // conexión remota ($conn2)

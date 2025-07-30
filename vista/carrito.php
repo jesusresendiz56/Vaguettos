@@ -1,9 +1,30 @@
 <?php
-include '../modelo/conexion.php'; // o ../modelo/conexion2.php según configuración
+include '../modelo/conexion2.php';
 
-// Obtener productos disponibles
-$sql = "SELECT * FROM productos WHERE stock > 0 ORDER BY id_producto DESC";
-$res = $conn->query($sql);
+// Obtener filtros únicos
+$filtroTipos = $conn2->query("SELECT DISTINCT tipo FROM productos WHERE tipo IS NOT NULL AND tipo != ''");
+$filtroModelos = $conn2->query("SELECT DISTINCT modelo_auto FROM productos WHERE modelo_auto IS NOT NULL AND modelo_auto != ''");
+$filtroYears = $conn2->query("SELECT DISTINCT years_aplicables FROM productos WHERE years_aplicables IS NOT NULL AND years_aplicables != ''");
+
+// Obtener valores seleccionados
+$filtroTipo = $_GET['tipo'] ?? '';
+$filtroModelo = $_GET['modelo'] ?? '';
+$filtroYear = $_GET['years'] ?? '';
+
+// Armar consulta con filtros
+$sql = "SELECT * FROM productos WHERE stock > 0";
+if (!empty($filtroTipo)) {
+    $sql .= " AND tipo = '" . $conn2->real_escape_string($filtroTipo) . "'";
+}
+if (!empty($filtroModelo)) {
+    $sql .= " AND modelo_auto = '" . $conn2->real_escape_string($filtroModelo) . "'";
+}
+if (!empty($filtroYear)) {
+    $sql .= " AND years_aplicables = '" . $conn2->real_escape_string($filtroYear) . "'";
+}
+$sql .= " ORDER BY id_producto DESC";
+
+$res = $conn2->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -16,9 +37,8 @@ $res = $conn->query($sql);
 
 <nav>
     <a href="index.php" class="nav-link">Inicio</a>
-    <a href="catalogo.php" class="nav-link">Catalogo de Productos</a>
+    <a href="catalogo.php" class="nav-link">Catálogo de Productos</a>
     <a href="#" class="nav-link">Carrito de Compras</a>
-    
     <a href="cerrarSesion.html" class="nav-link">Cerrar Sesión</a>
 </nav>
 
@@ -27,6 +47,45 @@ $res = $conn->query($sql);
     <h1>Catálogo de Productos</h1>
 </header>
 
+<!-- Filtros -->
+<section>
+    <h2>Filtrar productos</h2>
+    <form method="get" action="">
+        <label>Tipo:</label>
+        <select name="tipo">
+            <option value="">Todos</option>
+            <?php while ($row = $filtroTipos->fetch_assoc()): ?>
+                <option value="<?= $row['tipo'] ?>" <?= ($filtroTipo == $row['tipo']) ? 'selected' : '' ?>>
+                    <?= $row['tipo'] ?>
+                </option>
+            <?php endwhile; ?>
+        </select>
+
+        <label>Modelo:</label>
+        <select name="modelo">
+            <option value="">Todos</option>
+            <?php while ($row = $filtroModelos->fetch_assoc()): ?>
+                <option value="<?= $row['modelo_auto'] ?>" <?= ($filtroModelo == $row['modelo_auto']) ? 'selected' : '' ?>>
+                    <?= $row['modelo_auto'] ?>
+                </option>
+            <?php endwhile; ?>
+        </select>
+
+        <label>Años:</label>
+        <select name="years">
+            <option value="">Todos</option>
+            <?php while ($row = $filtroYears->fetch_assoc()): ?>
+                <option value="<?= $row['years_aplicables'] ?>" <?= ($filtroYear == $row['years_aplicables']) ? 'selected' : '' ?>>
+                    <?= $row['years_aplicables'] ?>
+                </option>
+            <?php endwhile; ?>
+        </select>
+
+        <button type="submit">Aplicar filtros</button>
+    </form>
+</section>
+
+<!-- Productos -->
 <section class="product-container">
     <?php while ($row = $res->fetch_assoc()): ?>
         <div class="product-card">
@@ -36,12 +95,17 @@ $res = $conn->query($sql);
                 <p>Sin imagen</p>
             <?php endif; ?>
             <h3><?= htmlspecialchars($row['nombre']) ?></h3>
-            <p>$<?= number_format($row['precio'], 2) ?> MXN</p>
+            <p><?= htmlspecialchars($row['descripcion']) ?></p>
+            <p>Modelo: <?= htmlspecialchars($row['modelo_auto']) ?></p>
+            <p>Tipo: <?= htmlspecialchars($row['tipo']) ?></p>
+            <p>Años: <?= htmlspecialchars($row['years_aplicables']) ?></p>
+            <p><strong>$<?= number_format($row['precio'], 2) ?> MXN</strong></p>
             <button onclick="addToCart(<?= $row['id_producto'] ?>, '<?= htmlspecialchars($row['nombre']) ?>', <?= $row['precio'] ?>)">Agregar</button>
         </div>
     <?php endwhile; ?>
 </section>
 
+<!-- Carrito -->
 <div id="cart">
     <h3>🛒 Carrito</h3>
     <ul id="cart-items"></ul>
@@ -60,6 +124,7 @@ $res = $conn->query($sql);
     </div>
 </div>
 
+<!-- JS para carrito -->
 <script>
 let cartItems = [];
 let total = 0;
