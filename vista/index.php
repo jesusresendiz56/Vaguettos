@@ -127,10 +127,28 @@ $usuario = $_SESSION['usuario'] ?? null;
   </div>
 
   <div class="ubicacion">
-    <h3>Ubicación</h3>
-    
-    <div id="mapa"></div>
-  </div>
+  <h3>Ubicación</h3>
+  <div id="mapa" style="width: 400px; height: 400px; border-radius: 10px; border: 2px solid #c2c7d0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
+</div>
+
+<script>
+  function initMap() {
+    const location = { lat: 19.4038383, lng: -98.9882725 }; // Universidad Tecnológica de Nezahualcóyotl
+    const map = new google.maps.Map(document.getElementById("mapa"), {
+      zoom: 14,
+      center: location,
+    });
+    const marker = new google.maps.Marker({
+      position: location,
+      map: map,
+    });
+  }
+</script>
+
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdpfD74JIrCWQHOzMWlJSgxl-20HZC_Y4&callback=initMap">
+</script>
+
 </section>
 
 <!-- =================== REDES SOCIALES =================== -->
@@ -143,6 +161,17 @@ $usuario = $_SESSION['usuario'] ?? null;
     <span><i class="fab fa-tiktok"></i></span>
   </div>
 </section>
+<script type="module">
+    import { CreateHilosWhatsappButton } from "https://button.hilos.io/whatsapp-button.esm.js";
+    CreateHilosWhatsappButton({
+      phone: "+525584449449",
+      message: "Gracias por contactar a Vaguettos. Encuentra accesorios originales para tu auto Volkswagen con la mejor calidad y precios. Visita nuestro catálogo en línea y aprovecha nuestras promociones exclusivas.",
+      color: "#ffffff",
+      background: "#72d66e",
+      position: "right",
+      padding: "20"
+    });
+  </script>
 
 <!-- =================== FOOTER =================== -->
 
