@@ -140,7 +140,7 @@ if (!$resultado_productos) {
 
   <div class="ubicacion">
   <h3>Ubicación</h3>
-  <div id="mapa" style="width: 400px; height: 400px; border-radius: 10px; border: 2px solid #c2c7d0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
+  <div id="mapa" style="width: 250px; height: 250px; border-radius: 10px; border: 2px solid #c2c7d0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
 </div>
 
 <script>
