@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
+    header('Location: ../vista/login.php');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -26,7 +34,7 @@
   </header>
 
   <section>
-    <h2>¡Bienvenido...!</h2>
+    <h2>¡Bienvenido, <?php echo $_SESSION['nombre_completo']; ?>!</h2>
     <p>
       Desde aquí puedes gestionar los módulos del sistema: clientes, pagos e inventario.
       Usa la barra de navegación superior para acceder a cada sección.
@@ -34,4 +42,3 @@
   </section>
 </body>
 </html>
-

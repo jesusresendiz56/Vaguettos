@@ -1,4 +1,7 @@
 <?php
+ini_set('session.gc_maxlifetime', 604800);
+ini_set('session.cookie_lifetime', 604800);
+session_set_cookie_params(604800);
 session_start();
 require_once '../modelo/conexion2.php';
 
@@ -6,34 +9,39 @@ if (!isset($_SESSION['id_usuario'])) {
     $_SESSION['id_usuario'] = 1; 
 }
 
-// Obtener filtros únicos para desplegables
+// Obtener filtros
 $filtroTipos = $conn2->query("SELECT DISTINCT tipo FROM productos WHERE tipo IS NOT NULL AND tipo != ''");
 $filtroModelos = $conn2->query("SELECT DISTINCT modelo_auto FROM productos WHERE modelo_auto IS NOT NULL AND modelo_auto != ''");
 $filtroYears = $conn2->query("SELECT DISTINCT years_aplicables FROM productos WHERE years_aplicables IS NOT NULL AND years_aplicables != ''");
 
-// Obtener valores de filtros seleccionados
+// Filtros seleccionados
 $filtroTipo = $_GET['tipo'] ?? '';
 $filtroModelo = $_GET['modelo'] ?? '';
 $filtroYear = $_GET['years'] ?? '';
 
-// Construir consulta con filtros aplicados
+// Consulta productos con filtros
 $sql = "SELECT * FROM productos WHERE stock > 0";
-if (!empty($filtroTipo)) {
-    $sql .= " AND tipo = '" . $conn2->real_escape_string($filtroTipo) . "'";
-}
-if (!empty($filtroModelo)) {
-    $sql .= " AND modelo_auto = '" . $conn2->real_escape_string($filtroModelo) . "'";
-}
-if (!empty($filtroYear)) {
-    $sql .= " AND years_aplicables = '" . $conn2->real_escape_string($filtroYear) . "'";
-}
+if (!empty($filtroTipo)) $sql .= " AND tipo = '" . $conn2->real_escape_string($filtroTipo) . "'";
+if (!empty($filtroModelo)) $sql .= " AND modelo_auto = '" . $conn2->real_escape_string($filtroModelo) . "'";
+if (!empty($filtroYear)) $sql .= " AND years_aplicables = '" . $conn2->real_escape_string($filtroYear) . "'";
 $sql .= " ORDER BY id_producto DESC";
-
 $res = $conn2->query($sql);
 
-// Obtener carrito actual para el usuario
-$cartItems = [];
+// Obtener nombre usuario
 $id_usuario = $_SESSION['id_usuario'];
+$nombre_usuario = "Usuario";
+$stmtUser = $conn2->prepare("SELECT nombre_completo FROM usuarios WHERE id_usuario = ?");
+$stmtUser->bind_param("i", $id_usuario);
+$stmtUser->execute();
+$resUser = $stmtUser->get_result();
+if ($resUser->num_rows > 0) {
+    $fila = $resUser->fetch_assoc();
+    $nombre_usuario = $fila['nombre_completo'];
+}
+$stmtUser->close();
+
+// Obtener carrito actual
+$cartItems = [];
 $sqlCarrito = "SELECT id_carrito FROM carritos WHERE id_usuario = ? ORDER BY fecha_creacion DESC LIMIT 1";
 $stmt = $conn2->prepare($sqlCarrito);
 $stmt->bind_param("i", $id_usuario);
@@ -61,7 +69,9 @@ if ($resCarrito->num_rows > 0) {
             'quantity' => (int)$row['cantidad'],
         ];
     }
+    $stmt2->close();
 }
+$stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -69,6 +79,16 @@ if ($resCarrito->num_rows > 0) {
     <meta charset="UTF-8" />
     <title>Catálogo y Carrito - Vaguettos</title>
     <link rel="stylesheet" href="../scr/css/carrito.css" />
+    <style>
+      #paypal-button-container { margin-top: 15px; }
+      .modal { 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; 
+      }
+      .modal-content {
+        background: #fff; padding: 20px; border-radius: 8px; width: 320px;
+      }
+    </style>
 </head>
 <body>
 
@@ -76,7 +96,8 @@ if ($resCarrito->num_rows > 0) {
     <a href="index.php" class="nav-link">Inicio</a>
     <a href="catalogo.php" class="nav-link">Catálogo de Productos</a>
     <a href="#" class="nav-link">Carrito de Compras</a>
-    <a href="index.php" class="nav-link">Cerrar Sesión</a>
+    <a href="../controlador/logout.php" class="nav-link">Cerrar Sesión</a>
+    <span style="color:#fff; margin-left: 20px;">Bienvenido, <?= htmlspecialchars($nombre_usuario) ?></span>
 </nav>
 
 <header>
@@ -84,7 +105,6 @@ if ($resCarrito->num_rows > 0) {
     <h1>Catálogo de Productos</h1>
 </header>
 
-<!-- Filtros -->
 <section>
     <h2>Filtrar productos</h2>
     <form method="get" action="">
@@ -117,7 +137,6 @@ if ($resCarrito->num_rows > 0) {
     </form>
 </section>
 
-<!-- Catálogo -->
 <div class="product-container">
     <?php while ($row = $res->fetch_assoc()): ?>
         <div class="product-card">
@@ -132,7 +151,6 @@ if ($resCarrito->num_rows > 0) {
     <?php endwhile; ?>
 </div>
 
-<!-- Carrito -->
 <div id="cart">
     <h3>🛒 Carrito</h3>
     <ul id="cart-items"></ul>
@@ -140,16 +158,20 @@ if ($resCarrito->num_rows > 0) {
     <button onclick="openModal()">Finalizar compra</button>
 </div>
 
-<!-- Modal de Compra -->
-<div id="checkout-modal" class="modal" style="display: none;">
+<div id="checkout-modal" class="modal" style="display:none;">
     <div class="modal-content">
         <h3>Finalizar compra</h3>
-        <input type="text" id="name" placeholder="Nombre completo" required>
-        <input type="text" id="phone" placeholder="Teléfono" required>
+        <input type="text" id="name" placeholder="Nombre completo" required />
+        <input type="text" id="phone" placeholder="Teléfono" required />
         <textarea id="address" placeholder="Dirección de entrega" required></textarea>
-        <button onclick="submitOrder()">Confirmar pedido</button>
+        <button id="confirm-order-btn" onclick="submitOrder()">Confirmar pedido</button>
+
+        <div id="paypal-button-container"></div>
+        <p id="result-message" style="color:green; font-weight:bold;"></p>
     </div>
 </div>
+
+<script src="https://www.paypal.com/sdk/js?client-id=Ad8eprBV7VKf8Z3Fvb5SaW7dYymWDNJDE5zdhVgJ_hr1B8UTP5NAZrJKFXSt8uTzYgtdJEKG8cshD7jL"></script>
 
 <script>
 let cartItems = <?= json_encode($cartItems) ?>;
@@ -173,10 +195,15 @@ function updateCart() {
 }
 
 function addToCart(id, name, price) {
-    fetch('../controlador/engine_carrito.php?action=add', {
+    const formData = new URLSearchParams();
+    formData.append('accion', 'agregar');
+    formData.append('id_producto', id);
+    formData.append('cantidad', '1');
+
+    fetch('../controlador/engine_carrito.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_producto: id })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
     })
     .then(res => res.json())
     .then(res => {
@@ -189,36 +216,70 @@ function addToCart(id, name, price) {
             }
             updateCart();
         } else {
-            alert('Error al agregar al carrito');
+            alert(res.error || 'Error al agregar al carrito');
         }
     });
 }
 
 function changeQuantity(index, change) {
     const item = cartItems[index];
-    fetch('../controlador/engine_carrito.php?action=update', {
+    if (!item) return;
+
+    let accion;
+    if (change > 0) {
+        accion = 'agregar';
+    } else {
+        if (item.quantity === 1) {
+            accion = 'eliminar';
+        } else {
+            accion = 'actualizar';
+        }
+    }
+
+    const formData = new URLSearchParams();
+    formData.append('accion', accion);
+    formData.append('id_producto', item.id);
+    if (accion === 'agregar') {
+        formData.append('cantidad', '1');
+    }
+    if (accion === 'actualizar') {
+        formData.append('cantidad', item.quantity - 1);
+    }
+
+    fetch('../controlador/engine_carrito.php', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ action: change > 0 ? 'increment' : 'decrement', id_producto: item.id })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
     })
     .then(res => res.json())
     .then(res => {
         if (res.success) {
-            item.quantity += change;
-            if (item.quantity <= 0) cartItems.splice(index, 1);
+            if (accion === 'agregar') {
+                item.quantity++;
+            } else if (accion === 'eliminar') {
+                cartItems.splice(index, 1);
+            } else if (accion === 'actualizar') {
+                item.quantity--;
+            }
             updateCart();
         } else {
-            alert('Error al actualizar el carrito');
+            alert(res.error || 'Error al actualizar el carrito');
         }
     });
 }
 
 function removeItem(index) {
     const item = cartItems[index];
-    fetch('../controlador/engine_carrito.php?action=update', {
+    if (!item) return;
+
+    const formData = new URLSearchParams();
+    formData.append('accion', 'eliminar');
+    formData.append('id_producto', item.id);
+
+    fetch('../controlador/engine_carrito.php', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ action: 'remove', id_producto: item.id })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
     })
     .then(res => res.json())
     .then(res => {
@@ -226,7 +287,7 @@ function removeItem(index) {
             cartItems.splice(index, 1);
             updateCart();
         } else {
-            alert('Error al eliminar producto');
+            alert(res.error || 'Error al eliminar producto');
         }
     });
 }
@@ -236,7 +297,18 @@ function openModal() {
         alert('Tu carrito está vacío.');
         return;
     }
-    document.getElementById('checkout-modal').style.display = 'block';
+    document.getElementById('checkout-modal').style.display = 'flex';
+
+    // Reset modal
+    document.getElementById('paypal-button-container').innerHTML = '';
+    document.getElementById('result-message').innerText = '';
+    document.getElementById('name').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('address').value = '';
+    document.getElementById('name').style.display = 'block';
+    document.getElementById('phone').style.display = 'block';
+    document.getElementById('address').style.display = 'block';
+    document.getElementById('confirm-order-btn').style.display = 'inline-block';
 }
 
 function submitOrder() {
@@ -249,11 +321,84 @@ function submitOrder() {
         return;
     }
 
-    alert(`¡Gracias por tu compra, ${name}!`);
-    cartItems = [];
-    total = 0;
-    updateCart();
-    document.getElementById('checkout-modal').style.display = 'none';
+    // Ocultar inputs y botón confirmar
+    document.getElementById('name').style.display = 'none';
+    document.getElementById('phone').style.display = 'none';
+    document.getElementById('address').style.display = 'none';
+    document.getElementById('confirm-order-btn').style.display = 'none';
+
+    // Mostrar PayPal
+    const paypalContainer = document.getElementById('paypal-button-container');
+    paypalContainer.style.display = 'block';
+
+    paypal.Buttons({
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: { value: total.toFixed(2) }
+                }]
+            });
+        },
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                // Enviar datos para generar y descargar ticket PDF
+                const orderData = {
+                    name: name,
+                    phone: phone,
+                    address: address,
+                    cart: cartItems
+                };
+
+                fetch('../controlador/generar_ticket.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Error al generar el ticket');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'ticket_compra.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(err => {
+                    alert(err.message);
+                });
+
+                // Limpiar carrito y mostrar mensaje
+                cartItems = [];
+                updateCart();
+                document.getElementById('result-message').innerText = "Pago completado con éxito, gracias por tu compra!";
+            });
+        },
+        onCancel: function(data) {
+            alert("Pago cancelado");
+            // Restaurar formulario
+            document.getElementById('name').style.display = 'block';
+            document.getElementById('phone').style.display = 'block';
+            document.getElementById('address').style.display = 'block';
+            document.getElementById('confirm-order-btn').style.display = 'inline-block';
+            document.getElementById('paypal-button-container').style.display = 'none';
+            document.getElementById('result-message').innerText = '';
+        },
+        onError: function(err) {
+            alert("Error en el pago");
+            console.error(err);
+            document.getElementById('name').style.display = 'block';
+            document.getElementById('phone').style.display = 'block';
+            document.getElementById('address').style.display = 'block';
+            document.getElementById('confirm-order-btn').style.display = 'inline-block';
+            document.getElementById('paypal-button-container').style.display = 'none';
+            document.getElementById('result-message').innerText = '';
+        }
+    }).render('#paypal-button-container');
 }
 
 window.onclick = function(event) {
@@ -267,5 +412,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCart();
 });
 </script>
+
 </body>
 </html>

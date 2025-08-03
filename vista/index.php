@@ -1,7 +1,8 @@
 <?php
 // --------------------- SESIÓN E INACTIVIDAD ---------------------
-ini_set('session.gc_maxlifetime', 300);
-session_set_cookie_params(300);
+ini_set('session.gc_maxlifetime', 604800); // 7 días
+ini_set('session.cookie_lifetime', 604800);
+session_set_cookie_params(604800);
 session_start();
 
 $tiempo_max_inactivo = 300;
@@ -16,17 +17,19 @@ if (isset($_SESSION['ultimo_acceso'])) {
     }
 }
 $_SESSION['ultimo_acceso'] = time();
+
 $usuario = $_SESSION['usuario'] ?? null;
+$nombre_usuario = $_SESSION['nombre_completo'] ?? $usuario ?? null;
 
 // --- Conexión a la base de datos ---
-include '../modelo/conexion2.php';  // conexión remota
+include '../modelo/conexion2.php';
 $conn = $conn2;
 
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Consulta para obtener el último producto de cada categoría
+// Consulta productos destacados
 $sql = "
 SELECT p.*, c.nombre AS nombre_categoria
 FROM categorias c
@@ -45,7 +48,6 @@ if (!$resultado_productos) {
     die("Error en la consulta: " . $conn->error);
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -57,49 +59,40 @@ if (!$resultado_productos) {
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
-
-<!-- =================== ENCABEZADO =================== -->
- 
 <header>
   <div class="top-bar">
     <img src="../scr/imagenes/logo.jpg" alt="Vaguettos Logo" class="logo" width="80" height="80">
     <p>Vaguettos</p>
 
-    <?php if ($usuario): ?>
+    <?php if ($nombre_usuario): ?>
       <form method="POST" action="../controlador/logout.php" style="display:inline;">
         <button type="submit" class="btn-login">
-          <?= htmlspecialchars($usuario); ?> (Cerrar sesión)
+          <?= htmlspecialchars($nombre_usuario); ?> (Cerrar sesión)
         </button>
       </form>
     <?php else: ?>
       <a href="login.php" class="btn-login">Iniciar Sesión</a>
     <?php endif; ?>
   </div>
-
-  <!-- Menú principal -->
-
   <nav class="main-nav">
     <a href="index.php">Inicio</a>
     <a href="catalogo.php">Catálogo de Productos</a>
-    <a href="carrito.php">Carrito de Compras</a>
-    <a href="#">Editar Perfil</a>
+    <?php if ($usuario): ?>
+      <a href="carrito.php">Carrito de Compras</a>
+      <a href="../controlador/logout.php">Cerrar sesión</a>
+    <?php endif; ?>
   </nav>
 </header>
-
-<!-- =================== BANNER PRINCIPAL =================== -->
 
 <section class="banner">
   <h1>“Todo Para Tu Auto, Cuando Y<br>Donde Quieras”</h1>
 </section>
 
-<!-- =================== PRODUCTOS DESTACADOS =================== -->
-
 <section class="productos">
   <h2>Productos Destacados</h2>
   <div class="cards">
-
     <?php while ($producto = $resultado_productos->fetch_assoc()): ?>
-      <?php if ($producto['id_producto'] !== null): // Verifica que exista producto ?>
+      <?php if ($producto['id_producto'] !== null): ?>
         <div class="card">
           <span class="categoria"><?= htmlspecialchars($producto['nombre_categoria']) ?></span>
           <img src="../scr/imagenes/productos/<?= htmlspecialchars($producto['imagen_url']) ?>" alt="<?= htmlspecialchars($producto['nombre']) ?>">
@@ -107,16 +100,12 @@ if (!$resultado_productos) {
         </div>
       <?php endif; ?>
     <?php endwhile; ?>
-
   </div>
 </section>
-
-<!-- =================== MARCAS DESTACADAS =================== -->
 
 <section class="marcas">
   <h2>Marcas Destacadas</h2>
   <div class="marca-botones">
-
     <button>Jetta</button>
     <button>Golf</button>
     <button>Tiguan</button>
@@ -125,45 +114,32 @@ if (!$resultado_productos) {
   </div>
 </section>
 
-<!-- =================== SERVICIOS Y UBICACIÓN =================== -->
-
 <section class="info">
   <div class="servicios">
     <h3>Nuestros Servicios</h3>
     <ul>
-      <li>Compra en Línea rapidá y segura</li>
+      <li>Compra en Línea rápida y segura</li>
       <li>Servicio técnico especializado a distancia</li>
       <li>Envío a domicilio</li>
       <li>Garantía de satisfacción en cada pedido</li>
     </ul>
   </div>
-
   <div class="ubicacion">
-  <h3>Ubicación</h3>
-  <div id="mapa" style="width: 250px; height: 250px; border-radius: 10px; border: 2px solid #c2c7d0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
-</div>
-
-<script>
-  function initMap() {
-    const location = { lat: 19.4038383, lng: -98.9882725 }; // Universidad Tecnológica de Nezahualcóyotl
-    const map = new google.maps.Map(document.getElementById("mapa"), {
-      zoom: 14,
-      center: location,
-    });
-    const marker = new google.maps.Marker({
-      position: location,
-      map: map,
-    });
-  }
-</script>
-
-<script async
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdpfD74JIrCWQHOzMWlJSgxl-20HZC_Y4&callback=initMap">
-</script>
-
+    <h3>Ubicación</h3>
+    <div id="mapa" style="width: 250px; height: 250px; border-radius: 10px; border: 2px solid #c2c7d0; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
+  </div>
+  <script>
+    function initMap() {
+      const location = { lat: 19.4038383, lng: -98.9882725 };
+      const map = new google.maps.Map(document.getElementById("mapa"), {
+        zoom: 14,
+        center: location,
+      });
+      const marker = new google.maps.Marker({ position: location, map: map });
+    }
+  </script>
+  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdpfD74JIrCWQHOzMWlJSgxl-20HZC_Y4&callback=initMap"></script>
 </section>
-
-<!-- =================== REDES SOCIALES =================== -->
 
 <section class="redes">
   <h3>Nuestras Redes</h3>
@@ -174,8 +150,6 @@ if (!$resultado_productos) {
   </div>
 </section>
 
-<!-- =================== FOOTER =================== -->
-
 <footer class="footer">
   <div class="footer-links">
     <a href="#">Contacto</a>
@@ -185,15 +159,11 @@ if (!$resultado_productos) {
   <p>&copy; 2025 VAGUETTOS</p>
 </footer>
 
-<!-- =================== SCRIPT DE SESIÓN =================== -->
 <script>
   let tiempoInactivo = 0;
   const limite = 300;
 
-  function resetInactividad() {
-    tiempoInactivo = 0;
-  }
-
+  function resetInactividad() { tiempoInactivo = 0; }
   ['mousemove', 'keydown', 'click', 'scroll'].forEach(evt =>
     window.addEventListener(evt, resetInactividad)
   );
@@ -201,17 +171,14 @@ if (!$resultado_productos) {
   setInterval(() => {
     tiempoInactivo++;
     if (tiempoInactivo === (limite - 60)) {
-      alert("⚠ Tu sesión está por expirar en 1 minuto por inactividad.");
+      alert("\u26a0 Tu sesión está por expirar en 1 minuto por inactividad.");
     }
     if (tiempoInactivo < limite) {
       fetch("../controlador/ping.php").catch(() => {});
     } else {
-      window.location.href = "sesion_expirada.php";
+      window.location.href = "../controlador/sesion_headler.php";
     }
   }, 1000);
 </script>
-
 </body>
 </html>
-
-

@@ -7,11 +7,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = trim($_POST['usuario_correo']);
         $clave = $_POST['clave'];
 
-        // Preparar consulta para buscar usuario por usuario o correo
+        // Verificación directa para admin predeterminado
+        if ($input === 'jesus' && $clave === 'resendiz123') {
+            $_SESSION['id_usuario'] = 0;
+            $_SESSION['usuario'] = 'jesus';
+            $_SESSION['nombre_completo'] = 'Administrador Jesús Resendiz';
+            $_SESSION['rol'] = 'admin';
+            header("Location: ../vista/indexadmin.php");
+            exit;
+        }
+
+        // Consulta para usuarios en la base de datos
         $stmt = $conn2->prepare("SELECT id_usuario, usuario, correo, clave, secret FROM usuarios WHERE usuario = ? OR correo = ?");
         if (!$stmt) {
             die("Error en la preparación: " . $conn2->error);
         }
+
         $stmt->bind_param("ss", $input, $input);
         $stmt->execute();
         $stmt->store_result();
@@ -20,15 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_result($id_usuario, $usuario, $correo, $clave_guardada, $secret);
             $stmt->fetch();
 
-            // Aquí la comparación, según si tienes hash o no
-            // Por ejemplo, si no usas hash:
-            if ($clave === $clave_guardada) {
+            if ($clave === $clave_guardada) { // Si usas hash, cambia a password_verify
                 $_SESSION['id_usuario'] = $id_usuario;
                 $_SESSION['usuario'] = $usuario;
                 $_SESSION['secret'] = $secret;
+                $_SESSION['rol'] = 'usuario'; // rol normal
 
                 header("Location: ../vista/verificacion.php");
-                exit();
+                exit;
             } else {
                 $_SESSION['error_login'] = "Contraseña incorrecta.";
             }
@@ -40,8 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $_SESSION['error_login'] = "Por favor llena ambos campos.";
     }
+
     header("Location: ../vista/login.php");
-    exit();
+    exit;
 }
 
 $conn2->close();
