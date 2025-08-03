@@ -55,9 +55,9 @@ $modelos_auto = ["Vento", "Beetle", "Tiguan", "Golf", "Jetta", "Polo"];
 <body>
 
 <nav>
-    <a href="indexadmin.html" class="nav-link">Inicio</a>
+    <a href="indexadmin.php" class="nav-link">Inicio</a>
     <a href="usuarios.php" class="nav-link">Administración de Clientes</a>
-    <a href="pagos.html" class="nav-link">Administración de Pagos</a>
+    <a href="pagos.php" class="nav-link">Administración de Pagos</a>
     <a href="inventario.php" class="nav-link">Gestión de Inventario</a>
     <a href="stock.php" class="nav-link">Listado de Productos</a>
     <a href="../vista/login.php" class="nav-link">Cerrar Sesión</a>

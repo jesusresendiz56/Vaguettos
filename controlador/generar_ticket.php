@@ -1,5 +1,5 @@
 <?php
-require '../fpdf186/fpdf.php';  // Ajusta ruta si hace falta
+require '../fpdf186/fpdf.php';
 require '../modelo/conexion2.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
@@ -10,44 +10,93 @@ if (!$data || !isset($data['cart'])) {
     exit;
 }
 
-$pdf = new FPDF();
-$pdf->AddPage();
-$pdf->SetFont('Arial', 'B', 16);
-$pdf->Cell(0, 10, 'Ticket de Compra - Vaguettos', 0, 1, 'C');
+class PDF_Ticket extends FPDF {
+    protected $logoPath = '../scr/imagenes/logo.jpg';
 
-$pdf->SetFont('Arial', '', 12);
-$pdf->Ln(5);
-$pdf->Cell(0, 10, 'Cliente: ' . $data['name'], 0, 1);
-$pdf->Cell(0, 10, 'Teléfono: ' . $data['phone'], 0, 1);
-$pdf->Cell(0, 10, 'Dirección: ' . $data['address'], 0, 1);
-$pdf->Ln(5);
+    function Header() {
+        // Encabezado más compacto
+        $this->SetFont('Arial', 'B', 12);
+        $this->Cell(0, 5, 'VAGUETTOS', 0, 1, 'C');
+        $this->SetFont('Arial', '', 9);
+        $this->Cell(0, 5, utf8_decode('Accesorios Volkswagen'), 0, 1, 'C');
+        $this->Cell(0, 5, 'www.vaguettos.com', 0, 1, 'C');
+        $this->Ln(2);
+        $this->Line(5, $this->GetY(), 75, $this->GetY());
+        $this->Ln(3);
+        
+        // Logo como marca de agua (posición ajustada)
+        if (file_exists($this->logoPath)) {
+            $this->Image($this->logoPath, 20, $this->GetY() + 20, 40);
+        }
+    }
 
-$pdf->Cell(80, 10, 'Producto', 1);
-$pdf->Cell(30, 10, 'Cantidad', 1);
-$pdf->Cell(40, 10, 'Precio Unitario', 1);
-$pdf->Cell(40, 10, 'Subtotal', 1);
-$pdf->Ln();
-
-$total = 0;
-foreach ($data['cart'] as $item) {
-    $subtotal = $item['quantity'] * $item['price'];
-    $total += $subtotal;
-    $pdf->Cell(80, 10, utf8_decode($item['name']), 1);
-    $pdf->Cell(30, 10, $item['quantity'], 1);
-    $pdf->Cell(40, 10, '$' . number_format($item['price'], 2), 1);
-    $pdf->Cell(40, 10, '$' . number_format($subtotal, 2), 1);
-    $pdf->Ln();
+    function Footer() {
+        $this->SetY(-15);
+        $this->SetFont('Arial', 'I', 7);
+        $this->Cell(0, 4, utf8_decode('¡Gracias por tu compra!'), 0, 1, 'C');
+        $this->Cell(0, 4, 'VAGUETTOS - Neza', 0, 1, 'C');
+    }
 }
 
-$pdf->Ln(5);
-$pdf->SetFont('Arial', 'B', 14);
-$pdf->Cell(0, 10, 'Total: $' . number_format($total, 2), 0, 1, 'R');
+// Calcular altura dinámica
+$alto_base = 80;
+$alto_lineas = count($data['cart']) * 8;
+$alto_total = $alto_base + $alto_lineas;
+$alto_final = max($alto_total, 120);
 
-// Headers para que el navegador entienda que es un PDF para descargar
+$pdf = new PDF_Ticket('P', 'mm', array(80, $alto_final));
+$pdf->SetMargins(5, 5, 5);
+$pdf->AddPage();
+$pdf->SetFont('Arial', '', 8);
+
+// Datos del cliente (compactos)
+$pdf->Cell(0, 4, 'Cliente: ' . utf8_decode(substr($data['name'], 0, 30)), 0, 1);
+$pdf->Cell(0, 4, 'Tel: ' . substr($data['phone'], 0, 15), 0, 1);
+$pdf->Cell(0, 4, 'Dir: ' . utf8_decode(substr($data['address'], 0, 30)), 0, 1);
+$pdf->Ln(2);
+$pdf->Line(5, $pdf->GetY(), 75, $pdf->GetY());
+$pdf->Ln(3);
+
+// Encabezado de productos optimizado
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(35, 5, 'PRODUCTO', 0);
+$pdf->Cell(10, 5, 'CANT', 0, 0, 'C');
+$pdf->Cell(15, 5, 'P.UNIT', 0, 0, 'R');
+$pdf->Cell(15, 5, 'TOTAL', 0, 1, 'R');
+$pdf->SetFont('Arial', '', 8);
+
+// Listado de productos mejorado
+$total = 0;
+foreach ($data['cart'] as $item) {
+    $nombre = utf8_decode($item['name']);
+    $subtotal = $item['quantity'] * $item['price'];
+    $total += $subtotal;
+    
+    // Ajustar texto largo
+    if(strlen($nombre) > 20) {
+        $nombre = substr($nombre, 0, 17) . '...';
+    }
+    
+    $pdf->Cell(35, 5, $nombre, 0);
+    $pdf->Cell(10, 5, $item['quantity'], 0, 0, 'C');
+    $pdf->Cell(15, 5, '$' . number_format($item['price'], 2, '.', ','), 0, 0, 'R');
+    $pdf->Cell(15, 5, '$' . number_format($subtotal, 2, '.', ','), 0, 1, 'R');
+}
+
+// Total mejor formateado
+$pdf->Ln(3);
+$pdf->Line(5, $pdf->GetY(), 75, $pdf->GetY());
+$pdf->Ln(2);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(50, 6, 'TOTAL:', 0, 0, 'R');
+$pdf->Cell(20, 6, '$' . number_format($total, 2, '.', ','), 0, 1, 'R');
+$pdf->Line(5, $pdf->GetY(), 75, $pdf->GetY());
+
+// Salida del PDF
 header('Content-Type: application/pdf');
-header('Content-Disposition: attachment; filename="ticket_compra.pdf"');
+header('Content-Disposition: attachment; filename="ticket_vaguettos.pdf"');
 header('Cache-Control: private, max-age=0, must-revalidate');
 header('Pragma: public');
 
-$pdf->Output('D'); // D = fuerza descarga del PDF
+$pdf->Output('D');
 exit;

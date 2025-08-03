@@ -46,3 +46,4 @@ CREATE TABLE carrito_productos (
     FOREIGN KEY (id_carrito) REFERENCES carritos(id_carrito),
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
 );
+
