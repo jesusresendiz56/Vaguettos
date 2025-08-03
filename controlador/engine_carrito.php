@@ -1,167 +1,158 @@
 <?php
 session_start();
-require_once '../modelo/conexion2.php';
+require_once '../modelo/conexion2.php'; // Asegúrate que este archivo define $conn2
 
 header('Content-Type: application/json');
 
-$id_usuario = $_SESSION['id_usuario'] ?? null;
-
-if (!$id_usuario) {
-    echo json_encode(['success' => false, 'message' => 'Usuario no autenticado']);
+if (!isset($_SESSION['id_usuario'])) {
+    echo json_encode(['error' => 'Debes iniciar sesión para usar el carrito.']);
     exit;
 }
 
-$action = $_GET['action'] ?? '';
-$input = json_decode(file_get_contents('php://input'), true);
-$id_producto = $input['id_producto'] ?? null;
+$id_usuario = $_SESSION['id_usuario'];
 
-if (!$id_producto) {
-    echo json_encode(['success' => false, 'message' => 'Producto no especificado']);
-    exit;
-}
-
-// 1. Verificar si el carrito existe para el usuario actual
-$stmt = $conn2->prepare("SELECT id_carrito FROM carritos WHERE id_usuario = ? ORDER BY fecha_creacion DESC LIMIT 1");
-$stmt->bind_param("i", $id_usuario);
-$stmt->execute();
-$res = $stmt->get_result();
-
-if ($res->num_rows > 0) {
-    $id_carrito = $res->fetch_assoc()['id_carrito'];
-} else {
-    // Crear nuevo carrito
-    $stmt = $conn2->prepare("INSERT INTO carritos (id_usuario) VALUES (?)");
+// Función: obtener o crear el carrito
+function obtenerOCrearCarrito($conn2, $id_usuario) {
+    $sqlCarrito = "SELECT id_carrito FROM carritos WHERE id_usuario = ? ORDER BY fecha_creacion DESC LIMIT 1";
+    $stmt = $conn2->prepare($sqlCarrito);
     $stmt->bind_param("i", $id_usuario);
     $stmt->execute();
-    $id_carrito = $conn2->insert_id;
-}
-
-// --- Obtener stock actual del producto ---
-$stmt = $conn2->prepare("SELECT stock FROM productos WHERE id_producto = ?");
-$stmt->bind_param("i", $id_producto);
-$stmt->execute();
-$resStock = $stmt->get_result();
-
-if ($resStock->num_rows === 0) {
-    echo json_encode(['success' => false, 'message' => 'Producto no encontrado']);
-    exit;
-}
-$stock_actual = $resStock->fetch_assoc()['stock'];
-
-// Acción: agregar producto
-if ($action === 'add') {
-    if ($stock_actual <= 0) {
-        echo json_encode(['success' => false, 'message' => 'Sin stock']);
-        exit;
+    $stmt->bind_result($id_carrito);
+    
+    if ($stmt->fetch()) {
+        $stmt->close();
+        return $id_carrito;
     }
+    $stmt->close();
 
-    // Verificar si ya está en el carrito
-    $stmt = $conn2->prepare("SELECT cantidad FROM carrito_productos WHERE id_carrito = ? AND id_producto = ?");
-    $stmt->bind_param("ii", $id_carrito, $id_producto);
-    $stmt->execute();
-    $res = $stmt->get_result();
-
-    if ($res->num_rows > 0) {
-        // Ya existe, incrementar cantidad
-        $stmt = $conn2->prepare("UPDATE carrito_productos SET cantidad = cantidad + 1 WHERE id_carrito = ? AND id_producto = ?");
-        $stmt->bind_param("ii", $id_carrito, $id_producto);
+    // No existe carrito, crear uno nuevo
+    $sqlNuevo = "INSERT INTO carritos (id_usuario) VALUES (?)";
+    $stmtNuevo = $conn2->prepare($sqlNuevo);
+    $stmtNuevo->bind_param("i", $id_usuario);
+    
+    if ($stmtNuevo->execute()) {
+        $nuevoId = $stmtNuevo->insert_id;
+        $stmtNuevo->close();
+        return $nuevoId;
     } else {
-        // Nuevo registro
-        $stmt = $conn2->prepare("INSERT INTO carrito_productos (id_carrito, id_producto, cantidad) VALUES (?, ?, 1)");
-        $stmt->bind_param("ii", $id_carrito, $id_producto);
+        $stmtNuevo->close();
+        return null;
     }
+}
 
-    $stmt->execute();
-
-    // Actualizar stock
-    $stmt = $conn2->prepare("UPDATE productos SET stock = stock - 1 WHERE id_producto = ?");
-    $stmt->bind_param("i", $id_producto);
-    $stmt->execute();
-
-    echo json_encode(['success' => true]);
+// Obtener el carrito del usuario
+$id_carrito = obtenerOCrearCarrito($conn2, $id_usuario);
+if (!$id_carrito) {
+    echo json_encode(['error' => 'Error al obtener o crear el carrito']);
     exit;
 }
 
-// Acción: actualizar (incrementar, decrementar o eliminar)
-if ($action === 'update') {
-    $accion = $input['action'] ?? '';
+// Procesar acción
+$accion = $_POST['accion'] ?? '';
 
-    if ($accion === 'increment') {
-        if ($stock_actual <= 0) {
-            echo json_encode(['success' => false, 'message' => 'Sin stock']);
+switch ($accion) {
+    case 'agregar':
+        $id_producto = intval($_POST['id_producto']);
+        $cantidad = intval($_POST['cantidad']);
+
+        // Verificar stock
+        $stockCheck = $conn2->prepare("SELECT stock FROM productos WHERE id_producto = ?");
+        $stockCheck->bind_param("i", $id_producto);
+        $stockCheck->execute();
+        $stockCheck->bind_result($stockDisponible);
+        $stockCheck->fetch();
+        $stockCheck->close();
+
+        if ($stockDisponible < $cantidad) {
+            echo json_encode(['error' => 'No hay suficiente stock']);
             exit;
         }
 
-        // Incrementar cantidad en carrito
-        $stmt = $conn2->prepare("UPDATE carrito_productos SET cantidad = cantidad + 1 WHERE id_carrito = ? AND id_producto = ?");
-        $stmt->bind_param("ii", $id_carrito, $id_producto);
-        $stmt->execute();
+        // Verificar si ya está en el carrito
+        $check = $conn2->prepare("SELECT cantidad FROM carrito_productos WHERE id_carrito = ? AND id_producto = ?");
+        $check->bind_param("ii", $id_carrito, $id_producto);
+        $check->execute();
+        $check->bind_result($cantidadExistente);
+        
+        if ($check->fetch()) {
+            $check->close();
+            // Ya existe: actualizar cantidad
+            $nuevaCantidad = $cantidadExistente + $cantidad;
+            $update = $conn2->prepare("UPDATE carrito_productos SET cantidad = ? WHERE id_carrito = ? AND id_producto = ?");
+            $update->bind_param("iii", $nuevaCantidad, $id_carrito, $id_producto);
+            $update->execute();
+            $update->close();
+        } else {
+            $check->close();
+            // Insertar nuevo
+            $insert = $conn2->prepare("INSERT INTO carrito_productos (id_carrito, id_producto, cantidad) VALUES (?, ?, ?)");
+            $insert->bind_param("iii", $id_carrito, $id_producto, $cantidad);
+            $insert->execute();
+            $insert->close();
+        }
 
-        // Disminuir stock
-        $stmt = $conn2->prepare("UPDATE productos SET stock = stock - 1 WHERE id_producto = ?");
-        $stmt->bind_param("i", $id_producto);
-        $stmt->execute();
+        // Actualizar stock en productos
+        $nuevoStock = $stockDisponible - $cantidad;
+        $updateStock = $conn2->prepare("UPDATE productos SET stock = ?, estado = IF(? > 0, 'En Stock', 'Agotado') WHERE id_producto = ?");
+        $updateStock->bind_param("iii", $nuevoStock, $nuevoStock, $id_producto);
+        $updateStock->execute();
+        $updateStock->close();
 
         echo json_encode(['success' => true]);
-        exit;
+        break;
 
-    } elseif ($accion === 'decrement') {
-        // Verificar cantidad actual
-        $stmt = $conn2->prepare("SELECT cantidad FROM carrito_productos WHERE id_carrito = ? AND id_producto = ?");
-        $stmt->bind_param("ii", $id_carrito, $id_producto);
+    case 'obtener':
+        // Obtener los productos del carrito
+        $sql = "SELECT cp.id_producto, p.nombre, p.precio, cp.cantidad 
+                FROM carrito_productos cp
+                INNER JOIN productos p ON cp.id_producto = p.id_producto
+                WHERE cp.id_carrito = ?";
+        $stmt = $conn2->prepare($sql);
+        $stmt->bind_param("i", $id_carrito);
         $stmt->execute();
-        $res = $stmt->get_result();
+        $resultado = $stmt->get_result();
 
-        if ($res->num_rows > 0) {
-            $cantidad = $res->fetch_assoc()['cantidad'];
-            if ($cantidad > 1) {
-                // Decrementar cantidad
-                $stmt = $conn2->prepare("UPDATE carrito_productos SET cantidad = cantidad - 1 WHERE id_carrito = ? AND id_producto = ?");
-                $stmt->bind_param("ii", $id_carrito, $id_producto);
-                $stmt->execute();
-            } else {
-                // Eliminar del carrito
-                $stmt = $conn2->prepare("DELETE FROM carrito_productos WHERE id_carrito = ? AND id_producto = ?");
-                $stmt->bind_param("ii", $id_carrito, $id_producto);
-                $stmt->execute();
-            }
-
-            // Aumentar stock
-            $stmt = $conn2->prepare("UPDATE productos SET stock = stock + 1 WHERE id_producto = ?");
-            $stmt->bind_param("i", $id_producto);
-            $stmt->execute();
-
-            echo json_encode(['success' => true]);
-            exit;
+        $carrito = [];
+        $total = 0;
+        while ($row = $resultado->fetch_assoc()) {
+            $row['subtotal'] = $row['precio'] * $row['cantidad'];
+            $total += $row['subtotal'];
+            $carrito[] = $row;
         }
 
-    } elseif ($accion === 'remove') {
-        // Obtener cantidad antes de eliminar
+        echo json_encode(['productos' => $carrito, 'total' => $total]);
+        break;
+
+    case 'eliminar':
+        $id_producto = intval($_POST['id_producto']);
+
+        // Recuperar cantidad antes de eliminar para devolver al stock
         $stmt = $conn2->prepare("SELECT cantidad FROM carrito_productos WHERE id_carrito = ? AND id_producto = ?");
         $stmt->bind_param("ii", $id_carrito, $id_producto);
         $stmt->execute();
-        $res = $stmt->get_result();
-
-        if ($res->num_rows > 0) {
-            $cantidad = $res->fetch_assoc()['cantidad'];
-
+        $stmt->bind_result($cantidad);
+        if ($stmt->fetch()) {
+            $stmt->close();
+            
             // Eliminar del carrito
-            $stmt = $conn2->prepare("DELETE FROM carrito_productos WHERE id_carrito = ? AND id_producto = ?");
-            $stmt->bind_param("ii", $id_carrito, $id_producto);
-            $stmt->execute();
+            $del = $conn2->prepare("DELETE FROM carrito_productos WHERE id_carrito = ? AND id_producto = ?");
+            $del->bind_param("ii", $id_carrito, $id_producto);
+            $del->execute();
+            $del->close();
 
-            // Devolver stock
-            $stmt = $conn2->prepare("UPDATE productos SET stock = stock + ? WHERE id_producto = ?");
-            $stmt->bind_param("ii", $cantidad, $id_producto);
-            $stmt->execute();
+            // Devolver al stock
+            $updateStock = $conn2->prepare("UPDATE productos SET stock = stock + ?, estado = 'En Stock' WHERE id_producto = ?");
+            $updateStock->bind_param("ii", $cantidad, $id_producto);
+            $updateStock->execute();
+            $updateStock->close();
 
             echo json_encode(['success' => true]);
-            exit;
+        } else {
+            echo json_encode(['error' => 'Producto no encontrado']);
         }
-    }
+        break;
 
-    echo json_encode(['success' => false, 'message' => 'Acción inválida']);
-    exit;
+    default:
+        echo json_encode(['error' => 'Acción no válida']);
 }
-
-echo json_encode(['success' => false, 'message' => 'Acción no reconocida']);
+?>
