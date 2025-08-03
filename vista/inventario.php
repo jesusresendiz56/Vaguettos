@@ -18,7 +18,7 @@ $producto = [
     'id_categoria' => '',
     'tipo' => '',
     'modelo_auto' => '',
-    'years_aplicables' => ''   // aquí cambié el nombre
+    'years_aplicables' => ''
 ];
 
 if (isset($_GET['id'])) {
@@ -34,8 +34,14 @@ if (isset($_GET['id'])) {
     $stmt->close();
 }
 
-// Obtener categorías
+// Obtener categorías desde base de datos
 $cats = $conn->query("SELECT id_categoria, nombre FROM categorias ORDER BY nombre");
+
+// Listado predefinido de tipos de accesorio
+$tipos_accesorio = ["Espejo", "Bocina", "Sensor de reversa", "Pantalla", "Cámara", "Tapete", "Otro"];
+
+// Listado predefinido de modelos de auto
+$modelos_auto = ["Vento", "Beetle", "Tiguan", "Golf", "Jetta", "Polo"];
 ?>
 
 <!DOCTYPE html>
@@ -69,11 +75,23 @@ $cats = $conn->query("SELECT id_categoria, nombre FROM categorias ORDER BY nombr
     <label for="nombre">Nombre del producto:</label>
     <input type="text" id="nombre" name="nombre" placeholder="Nombre del producto" value="<?= htmlspecialchars($producto['nombre']) ?>" required>
 
+    <!-- CAMBIO: modelo_auto como <select> con opciones fijas -->
     <label for="modelo_auto">Modelo del auto:</label>
-    <input type="text" id="modelo_auto" name="modelo_auto" placeholder="Modelo del auto" value="<?= htmlspecialchars($producto['modelo_auto']) ?>" required>
+    <select id="modelo_auto" name="modelo_auto" required>
+        <option value="">Selecciona un modelo</option>
+        <?php foreach ($modelos_auto as $modelo): ?>
+            <option value="<?= $modelo ?>" <?= ($producto['modelo_auto'] == $modelo) ? 'selected' : '' ?>><?= $modelo ?></option>
+        <?php endforeach; ?>
+    </select>
 
+    <!-- CAMBIO: tipo como <select> con valores predefinidos -->
     <label for="tipo">Tipo de accesorio:</label>
-    <input type="text" id="tipo" name="tipo" placeholder="Tipo de accesorio" value="<?= htmlspecialchars($producto['tipo']) ?>" required>
+    <select id="tipo" name="tipo" required>
+        <option value="">Selecciona un tipo</option>
+        <?php foreach ($tipos_accesorio as $tipo): ?>
+            <option value="<?= $tipo ?>" <?= ($producto['tipo'] == $tipo) ? 'selected' : '' ?>><?= $tipo ?></option>
+        <?php endforeach; ?>
+    </select>
 
     <label for="years_aplicables">Años aplicables:</label>
     <input type="text" id="years_aplicables" name="years_aplicables" placeholder="Ej. 2015-2020" value="<?= htmlspecialchars($producto['years_aplicables']) ?>" required>

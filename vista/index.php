@@ -17,7 +17,35 @@ if (isset($_SESSION['ultimo_acceso'])) {
 }
 $_SESSION['ultimo_acceso'] = time();
 $usuario = $_SESSION['usuario'] ?? null;
+
+// --- Conexión a la base de datos ---
+include '../modelo/conexion2.php';  // conexión remota
+$conn = $conn2;
+
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+
+// Consulta para obtener el último producto de cada categoría
+$sql = "
+SELECT p.*, c.nombre AS nombre_categoria
+FROM categorias c
+LEFT JOIN productos p ON p.id_categoria = c.id_categoria
+AND p.id_producto = (
+    SELECT MAX(id_producto)
+    FROM productos
+    WHERE id_categoria = c.id_categoria
+)
+ORDER BY c.nombre;
+";
+
+$resultado_productos = $conn->query($sql);
+
+if (!$resultado_productos) {
+    die("Error en la consulta: " . $conn->error);
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -34,7 +62,7 @@ $usuario = $_SESSION['usuario'] ?? null;
  
 <header>
   <div class="top-bar">
-    <img src="../scr/imagenes/logo.jpg" alt="Vaguettos Logo" class="logo">
+    <img src="../scr/imagenes/logo.jpg" alt="Vaguettos Logo" class="logo" width="80" height="80">
     <p>Vaguettos</p>
 
     <?php if ($usuario): ?>
@@ -70,30 +98,16 @@ $usuario = $_SESSION['usuario'] ?? null;
   <h2>Productos Destacados</h2>
   <div class="cards">
 
-    
-    <div class="card">
-      <span class="categoria">Rines</span>
-      <img src="../scr/producto1.jpg" alt="Producto 1">
-      <p class="precio">$650</p>
-    </div>
+    <?php while ($producto = $resultado_productos->fetch_assoc()): ?>
+      <?php if ($producto['id_producto'] !== null): // Verifica que exista producto ?>
+        <div class="card">
+          <span class="categoria"><?= htmlspecialchars($producto['nombre_categoria']) ?></span>
+          <img src="../scr/imagenes/productos/<?= htmlspecialchars($producto['imagen_url']) ?>" alt="<?= htmlspecialchars($producto['nombre']) ?>">
+          <p class="precio">$<?= number_format($producto['precio'], 2) ?></p>
+        </div>
+      <?php endif; ?>
+    <?php endwhile; ?>
 
-    <div class="card">
-      <span class="categoria">Cámaras</span>
-      <img src="../scr/producto2.jpg" alt="Producto 2">
-      <p class="precio">$850</p>
-    </div>
-
-    <div class="card">
-      <span class="categoria">Asientos</span>
-      <img src="../scr/producto3.jpg" alt="Producto 3">
-      <p class="precio">$990</p>
-    </div>
-
-    <div class="card">
-      <span class="categoria">Parrillas</span>
-      <img src="../scr/producto4.jpg" alt="Producto 4">
-      <p class="precio">$899</p>
-    </div>
   </div>
 </section>
 
@@ -102,8 +116,6 @@ $usuario = $_SESSION['usuario'] ?? null;
 <section class="marcas">
   <h2>Marcas Destacadas</h2>
   <div class="marca-botones">
-
-  
 
     <button>Jetta</button>
     <button>Golf</button>
@@ -161,17 +173,6 @@ $usuario = $_SESSION['usuario'] ?? null;
     <span><i class="fab fa-tiktok"></i></span>
   </div>
 </section>
-<script type="module">
-    import { CreateHilosWhatsappButton } from "https://button.hilos.io/whatsapp-button.esm.js";
-    CreateHilosWhatsappButton({
-      phone: "+525584449449",
-      message: "Gracias por contactar a Vaguettos. Encuentra accesorios originales para tu auto Volkswagen con la mejor calidad y precios. Visita nuestro catálogo en línea y aprovecha nuestras promociones exclusivas.",
-      color: "#ffffff",
-      background: "#72d66e",
-      position: "right",
-      padding: "20"
-    });
-  </script>
 
 <!-- =================== FOOTER =================== -->
 
@@ -200,7 +201,7 @@ $usuario = $_SESSION['usuario'] ?? null;
   setInterval(() => {
     tiempoInactivo++;
     if (tiempoInactivo === (limite - 60)) {
-      alert("⚠️ Tu sesión está por expirar en 1 minuto por inactividad.");
+      alert("⚠ Tu sesión está por expirar en 1 minuto por inactividad.");
     }
     if (tiempoInactivo < limite) {
       fetch("../controlador/ping.php").catch(() => {});
