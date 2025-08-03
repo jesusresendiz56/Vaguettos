@@ -1,17 +1,22 @@
 <?php
-include '../modelo/conexion2.php';
+session_start();
+require_once '../modelo/conexion2.php';
 
-// Obtener filtros únicos
+if (!isset($_SESSION['id_usuario'])) {
+    $_SESSION['id_usuario'] = 1; 
+}
+
+// Obtener filtros únicos para desplegables
 $filtroTipos = $conn2->query("SELECT DISTINCT tipo FROM productos WHERE tipo IS NOT NULL AND tipo != ''");
 $filtroModelos = $conn2->query("SELECT DISTINCT modelo_auto FROM productos WHERE modelo_auto IS NOT NULL AND modelo_auto != ''");
 $filtroYears = $conn2->query("SELECT DISTINCT years_aplicables FROM productos WHERE years_aplicables IS NOT NULL AND years_aplicables != ''");
 
-// Obtener valores seleccionados
+// Obtener valores de filtros seleccionados
 $filtroTipo = $_GET['tipo'] ?? '';
 $filtroModelo = $_GET['modelo'] ?? '';
 $filtroYear = $_GET['years'] ?? '';
 
-// Armar consulta con filtros
+// Construir consulta con filtros aplicados
 $sql = "SELECT * FROM productos WHERE stock > 0";
 if (!empty($filtroTipo)) {
     $sql .= " AND tipo = '" . $conn2->real_escape_string($filtroTipo) . "'";
@@ -25,12 +30,44 @@ if (!empty($filtroYear)) {
 $sql .= " ORDER BY id_producto DESC";
 
 $res = $conn2->query($sql);
+
+// Obtener carrito actual para el usuario
+$cartItems = [];
+$id_usuario = $_SESSION['id_usuario'];
+$sqlCarrito = "SELECT id_carrito FROM carritos WHERE id_usuario = ? ORDER BY fecha_creacion DESC LIMIT 1";
+$stmt = $conn2->prepare($sqlCarrito);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$resCarrito = $stmt->get_result();
+
+if ($resCarrito->num_rows > 0) {
+    $carrito = $resCarrito->fetch_assoc();
+    $id_carrito = $carrito['id_carrito'];
+
+    $sqlProd = "SELECT p.id_producto, p.nombre, p.precio, cp.cantidad
+                FROM carrito_productos cp
+                JOIN productos p ON cp.id_producto = p.id_producto
+                WHERE cp.id_carrito = ?";
+    $stmt2 = $conn2->prepare($sqlProd);
+    $stmt2->bind_param("i", $id_carrito);
+    $stmt2->execute();
+    $resProd = $stmt2->get_result();
+
+    while ($row = $resProd->fetch_assoc()) {
+        $cartItems[] = [
+            'id' => (int)$row['id_producto'],
+            'name' => $row['nombre'],
+            'price' => (float)$row['precio'],
+            'quantity' => (int)$row['cantidad'],
+        ];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Carrito de Compras - Vaguettos</title>
+    <meta charset="UTF-8" />
+    <title>Catálogo y Carrito - Vaguettos</title>
     <link rel="stylesheet" href="../scr/css/carrito.css" />
 </head>
 <body>
@@ -39,7 +76,7 @@ $res = $conn2->query($sql);
     <a href="index.php" class="nav-link">Inicio</a>
     <a href="catalogo.php" class="nav-link">Catálogo de Productos</a>
     <a href="#" class="nav-link">Carrito de Compras</a>
-    <a href="cerrarSesion.html" class="nav-link">Cerrar Sesión</a>
+    <a href="index.php" class="nav-link">Cerrar Sesión</a>
 </nav>
 
 <header>
@@ -51,59 +88,49 @@ $res = $conn2->query($sql);
 <section>
     <h2>Filtrar productos</h2>
     <form method="get" action="">
-        <label>Tipo:</label>
-        <select name="tipo">
-            <option value="">Todos</option>
+        <select name="tipo" onchange="this.form.submit()">
+            <option value="">Todos los tipos</option>
             <?php while ($row = $filtroTipos->fetch_assoc()): ?>
-                <option value="<?= $row['tipo'] ?>" <?= ($filtroTipo == $row['tipo']) ? 'selected' : '' ?>>
-                    <?= $row['tipo'] ?>
+                <option value="<?= htmlspecialchars($row['tipo']) ?>" <?= ($filtroTipo == $row['tipo']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($row['tipo']) ?>
                 </option>
             <?php endwhile; ?>
         </select>
 
-        <label>Modelo:</label>
-        <select name="modelo">
-            <option value="">Todos</option>
+        <select name="modelo" onchange="this.form.submit()">
+            <option value="">Todos los modelos</option>
             <?php while ($row = $filtroModelos->fetch_assoc()): ?>
-                <option value="<?= $row['modelo_auto'] ?>" <?= ($filtroModelo == $row['modelo_auto']) ? 'selected' : '' ?>>
-                    <?= $row['modelo_auto'] ?>
+                <option value="<?= htmlspecialchars($row['modelo_auto']) ?>" <?= ($filtroModelo == $row['modelo_auto']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($row['modelo_auto']) ?>
                 </option>
             <?php endwhile; ?>
         </select>
 
-        <label>Años:</label>
-        <select name="years">
-            <option value="">Todos</option>
+        <select name="years" onchange="this.form.submit()">
+            <option value="">Todos los años</option>
             <?php while ($row = $filtroYears->fetch_assoc()): ?>
-                <option value="<?= $row['years_aplicables'] ?>" <?= ($filtroYear == $row['years_aplicables']) ? 'selected' : '' ?>>
-                    <?= $row['years_aplicables'] ?>
+                <option value="<?= htmlspecialchars($row['years_aplicables']) ?>" <?= ($filtroYear == $row['years_aplicables']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($row['years_aplicables']) ?>
                 </option>
             <?php endwhile; ?>
         </select>
-
-        <button type="submit">Aplicar filtros</button>
     </form>
 </section>
 
-<!-- Productos -->
-<section class="product-container">
+<!-- Catálogo -->
+<div class="product-container">
     <?php while ($row = $res->fetch_assoc()): ?>
         <div class="product-card">
-            <?php if (!empty($row['imagen_url'])): ?>
-                <img src="../scr/imagenes/productos/<?= htmlspecialchars($row['imagen_url']) ?>" alt="<?= htmlspecialchars($row['nombre']) ?>">
-            <?php else: ?>
-                <p>Sin imagen</p>
-            <?php endif; ?>
+            <img src="../scr/imagenes/productos/<?= htmlspecialchars($row['imagen_url'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($row['nombre']) ?>" />
             <h3><?= htmlspecialchars($row['nombre']) ?></h3>
-            <p><?= htmlspecialchars($row['descripcion']) ?></p>
-            <p>Modelo: <?= htmlspecialchars($row['modelo_auto']) ?></p>
             <p>Tipo: <?= htmlspecialchars($row['tipo']) ?></p>
+            <p>Modelo: <?= htmlspecialchars($row['modelo_auto']) ?></p>
             <p>Años: <?= htmlspecialchars($row['years_aplicables']) ?></p>
-            <p><strong>$<?= number_format($row['precio'], 2) ?> MXN</strong></p>
-            <button onclick="addToCart(<?= $row['id_producto'] ?>, '<?= htmlspecialchars($row['nombre']) ?>', <?= $row['precio'] ?>)">Agregar</button>
+            <p>Precio: $<?= number_format($row['precio'], 2) ?></p>
+            <button onclick="addToCart(<?= $row['id_producto'] ?>, '<?= addslashes($row['nombre']) ?>', <?= $row['precio'] ?>)">Agregar al carrito</button>
         </div>
     <?php endwhile; ?>
-</section>
+</div>
 
 <!-- Carrito -->
 <div id="cart">
@@ -124,20 +151,9 @@ $res = $conn2->query($sql);
     </div>
 </div>
 
-<!-- JS para carrito -->
 <script>
-let cartItems = [];
+let cartItems = <?= json_encode($cartItems) ?>;
 let total = 0;
-
-function addToCart(id, name, price) {
-    let item = cartItems.find(i => i.id === id);
-    if (item) {
-        item.quantity++;
-    } else {
-        cartItems.push({ id, name, price, quantity: 1 });
-    }
-    updateCart();
-}
 
 function updateCart() {
     const cartList = document.getElementById('cart-items');
@@ -156,18 +172,63 @@ function updateCart() {
     document.getElementById('cart-total').innerText = total.toFixed(2);
 }
 
+function addToCart(id, name, price) {
+    fetch('../controlador/engine_carrito.php?action=add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_producto: id })
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.success) {
+            let item = cartItems.find(i => i.id === id);
+            if (item) {
+                item.quantity++;
+            } else {
+                cartItems.push({ id, name, price, quantity: 1 });
+            }
+            updateCart();
+        } else {
+            alert('Error al agregar al carrito');
+        }
+    });
+}
+
 function changeQuantity(index, change) {
-    if (cartItems[index].quantity + change > 0) {
-        cartItems[index].quantity += change;
-    } else {
-        cartItems.splice(index, 1);
-    }
-    updateCart();
+    const item = cartItems[index];
+    fetch('../controlador/engine_carrito.php?action=update', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: change > 0 ? 'increment' : 'decrement', id_producto: item.id })
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.success) {
+            item.quantity += change;
+            if (item.quantity <= 0) cartItems.splice(index, 1);
+            updateCart();
+        } else {
+            alert('Error al actualizar el carrito');
+        }
+    });
 }
 
 function removeItem(index) {
-    cartItems.splice(index, 1);
-    updateCart();
+    const item = cartItems[index];
+    fetch('../controlador/engine_carrito.php?action=update', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: 'remove', id_producto: item.id })
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.success) {
+            cartItems.splice(index, 1);
+            updateCart();
+        } else {
+            alert('Error al eliminar producto');
+        }
+    });
 }
 
 function openModal() {
@@ -194,7 +255,17 @@ function submitOrder() {
     updateCart();
     document.getElementById('checkout-modal').style.display = 'none';
 }
-</script>
 
+window.onclick = function(event) {
+    const modal = document.getElementById('checkout-modal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateCart();
+});
+</script>
 </body>
 </html>
