@@ -36,7 +36,7 @@ label {
 
 input {
   padding: 8px;
-  border-radius: 20px;
+  border-radius: 20px; /* Mantener el redondeado aquí */
   border: 1px solid #888;
   margin-top: 5px;
 }
@@ -47,7 +47,7 @@ button {
   background-color: #03143e;
   color: white;
   border: none;
-  border-radius: 20px;
+  border-radius: 20px; /* Mantener el redondeado aquí */
   cursor: pointer;
 }
 
@@ -71,8 +71,8 @@ a {
 }
 
 .logo-section.left-rounded {
-  border-bottom-right-radius: 100px;
-  border-top-right-radius: 100px;
+  border-bottom-right-radius: 0; 
+  border-top-right-radius: 0; 
 }
 
 .logo {
