@@ -29,6 +29,7 @@ session_start(); ?>
     </form>
 
     <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
+    <p><a href="../vista/recuperar_contraseña.html">¿Olvidaste tu contraseña?</a></p>
   </div>
 
   <div class="logo-section left-rounded">

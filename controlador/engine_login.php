@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = trim($_POST['usuario_correo']);
         $clave = $_POST['clave'];
 
-        // Verificación directa para admin predeterminado
+        // Admin predeterminado (sin hash)
         if ($input === 'jesus' && $clave === 'resendiz123') {
             $_SESSION['id_usuario'] = 0;
             $_SESSION['usuario'] = 'jesus';
@@ -17,10 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // Consulta para usuarios en la base de datos
+        // Usuario en la base de datos
         $stmt = $conn2->prepare("SELECT id_usuario, usuario, correo, clave, secret FROM usuarios WHERE usuario = ? OR correo = ?");
         if (!$stmt) {
-            die("Error en la preparación: " . $conn2->error);
+            die("Error en la preparación de la consulta: " . $conn2->error);
         }
 
         $stmt->bind_param("ss", $input, $input);
@@ -28,14 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->store_result();
 
         if ($stmt->num_rows === 1) {
-            $stmt->bind_result($id_usuario, $usuario, $correo, $clave_guardada, $secret);
+            $stmt->bind_result($id_usuario, $usuario, $correo, $clave_hash, $secret);
             $stmt->fetch();
 
-            if ($clave === $clave_guardada) { // Si usas hash, cambia a password_verify
+            if (password_verify($clave, $clave_hash)) {
                 $_SESSION['id_usuario'] = $id_usuario;
                 $_SESSION['usuario'] = $usuario;
+                $_SESSION['correo'] = $correo;
                 $_SESSION['secret'] = $secret;
-                $_SESSION['rol'] = 'usuario'; // rol normal
+                $_SESSION['rol'] = 'usuario';
 
                 header("Location: ../vista/verificacion.php");
                 exit;

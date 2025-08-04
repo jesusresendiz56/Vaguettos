@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Iniciar Sesión</title>
+  <link rel="stylesheet" href="../scr/css/estiloslogin.css" />
+</head>
+<body class="container">
+  <div class="form-section">
+    <h2>Recuperar contraseña</h2>
+    <p>Ingresa tu correo y te enviaremos un código de verificación</p>
+    <form method="POST" action="../controlador/engine_recuperar.php">
+      <label for="usuario_correo">correo</label>
+      <input type="text" id="usuario_correo" name="usuario_correo" placeholder="correo electronico" required />
+
+      <button type="submit">Ingresar</button>
+    </form>
+
+    <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
+  </div>
+
+  <div class="logo-section left-rounded">
+    <img src="../scr/imagenes/logo.jpg" alt="Logo" class="logo" />
+  </div>
+</body>
+</html>
