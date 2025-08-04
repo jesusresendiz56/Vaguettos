@@ -10,7 +10,7 @@ if (isset($_POST['search']) && !empty($_POST['valueToSearch'])) {
 }
 
 // Consulta carritos con totales calculados
-$query = "SELECT c.id_carrito, u.nombre_completo, c.fecha_creacion,
+$query = "SELECT c.id_carrito, u.usuario, c.fecha_creacion,
           (SELECT SUM(p.precio * cp.cantidad)
            FROM carrito_productos cp
            JOIN productos p ON cp.id_producto = p.id_producto
@@ -72,7 +72,7 @@ $result = $conn2->query($query);
     <tbody>
     <?php while ($row = $result->fetch_assoc()): ?>
         <tr>
-            <td><?= htmlspecialchars($row['nombre_completo']) ?></td>
+            <td><?= htmlspecialchars($row['usuario']) ?></td>
             <td><?= htmlspecialchars($row['fecha_creacion']) ?></td>
             <td>$<?= number_format($row['total'] ?? 0, 2) ?></td>
             <td>

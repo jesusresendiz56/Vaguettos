@@ -38,7 +38,19 @@ if (isset($_GET['id'])) {
 $cats = $conn->query("SELECT id_categoria, nombre FROM categorias ORDER BY nombre");
 
 // Listado predefinido de tipos de accesorio
-$tipos_accesorio = ["Espejo", "Bocina", "Sensor de reversa", "Pantalla", "Cámara", "Tapete", "Otro"];
+$tipos_accesorio = [
+    "Bocinas y Tweeters",
+    "Faros y Luces LED",
+    "Sensores de Reversa",
+    "Pantallas y Radios",
+    "Cámaras de Estacionamiento",
+    "Tapetes y Alfombrillas",
+    "Espejos Laterales",
+    "Spoilers y Difusores",
+    "Protectores de Puerta",
+    "Accesorios Universales"
+];
+
 
 // Listado predefinido de modelos de auto
 $modelos_auto = ["Vento", "Beetle", "Tiguan", "Golf", "Jetta", "Polo"];
