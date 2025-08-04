@@ -142,14 +142,32 @@ if (!$resultado_productos) {
   <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdpfD74JIrCWQHOzMWlJSgxl-20HZC_Y4&callback=initMap"></script>
 </section>
 
-<section class="redes">
-  <h3>Nuestras Redes</h3>
-  <div class="iconos">
-    <span><i class="fab fa-facebook-f"></i></span>
-    <span><i class="fab fa-instagram"></i></span>
-    <span><i class="fab fa-tiktok"></i></span>
+<!--! Redes Sociales -->
+<section class="redes" style="text-align: center; padding: 2rem;">
+  <h3 style="font-size: 1.8rem; color: #2c3e50; margin-bottom: 1rem;">Nuestras Redes</h3>
+
+  <div class="mini-posts-instagram" style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+    <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DMImVJcsH5y/?igsh=dWF4a2RvaTd2YXB0" data-instgrm-version="14" style="max-width: 320px; width: 100%;">
+      <a href="https://www.instagram.com/reel/DMYltDKSnEs/?igsh=OHpodm94cWYwMjdp" target="_blank" rel="noopener noreferrer">Ver esta publicación en Instagram</a>
+    </blockquote>
+
+    <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DMdN0d3MZsV/?igsh=MXhjZHo5bXVoYXlucw==" data-instgrm-version="14" style="max-width: 320px; width: 100%;">
+      <a href="https://www.instagram.com/reel/DMdN0d3MZsV/?igsh=MXhjZHo5bXVoYXlucw==" target="_blank" rel="noopener noreferrer">Ver esta publicación en Instagram</a>
+    </blockquote>
   </div>
+
+  <p style="margin-top: 2rem;">
+    <a href="https://www.instagram.com/volkswagenmexico" target="_blank" style="padding: 0.6rem 1.2rem; background-color: #E1306C; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 1rem; display: inline-block;">
+      Visita nuestro Instagram Oficial
+    </a>
+  </p>
+
+  <script async src="//www.instagram.com/embed.js"></script>
 </section>
+
+
+
+
 
 <footer class="footer">
   <div class="footer-links">

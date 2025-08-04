@@ -115,11 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="telefono">Teléfono:</label>
         <input type="text" name="telefono" id="telefono" value="<?= htmlspecialchars($usuario['telefono']) ?>">
 
-        <label for="clave1">Nueva contraseña:</label>
-        <input type="password" name="clave1" id="clave1">
-
-        <label for="clave2">Confirmar contraseña:</label>
-        <input type="password" name="clave2" id="clave2">
+        
 
         <input type="submit" value="Actualizar perfil">
     </form>

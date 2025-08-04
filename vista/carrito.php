@@ -96,6 +96,7 @@ $stmt->close();
     <a href="index.php" class="nav-link">Inicio</a>
     <a href="catalogo.php" class="nav-link">Catálogo de Productos</a>
     <a href="#" class="nav-link">Carrito de Compras</a>
+    <a href="editar_perfil.php" class="nav-link">Editar Perfil</a>
     <a href="../controlador/logout.php" class="nav-link">Cerrar Sesión</a>
     <span style="color:#fff; margin-left: 20px;">Bienvenido, <?= htmlspecialchars($nombre_usuario) ?></span>
 </nav>

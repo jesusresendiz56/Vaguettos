@@ -33,7 +33,6 @@ if (!$result) {
 ?>
 <!-- aquí continúa el HTML igual -->
  
-?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -82,7 +81,7 @@ if (!$result) {
             <th>Fecha</th>
             <th>Monto Total</th>
             <th>Eliminar Carrito</th>
-            <th>Imprimir Factura</th>
+            <!--<th>Imprimir Factura</th>-->
         </tr>
     </thead>
     <tbody>
@@ -95,15 +94,15 @@ if (!$result) {
                 <td><?= htmlspecialchars($row['fecha_creacion']) ?></td>
                 <td>$<?= number_format(floatval($row['total']), 2) ?></td>
                 <td style="text-align: center;">
-                    <a href="eliminar_carrito.php?id_carrito=<?= (int)$row['id_carrito'] ?>" onclick="return confirm('¿Eliminar este carrito?')">
+                    <a href="../controlador/eliminar_carrito.php?id_carrito=<?= (int)$row['id_carrito'] ?>" onclick="return confirm('¿Eliminar este carrito?')">
                         <img src='../scr/imagenes/eliminar.png' alt='Eliminar' width='20' height='20' />
                     </a>
                 </td>
-                <td style="text-align: center;">
+                <!--<td style="text-align: center;">
                     <a href="../controlador/generar_factura.php?id_carrito=<?= (int)$row['id_carrito'] ?>" target="_blank" title="Imprimir Factura">
                         <img src='../scr/imagenes/imprimir.png' alt='Factura' width='20' height='20' />
                     </a>
-                </td>
+                </td>// -->
             </tr>
         <?php endwhile; ?>
     <?php endif; ?>
