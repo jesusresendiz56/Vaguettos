@@ -21,12 +21,13 @@ if ($resultado->num_rows === 0) die("Producto no encontrado.");
 $producto = $resultado->fetch_assoc();
 $stmt->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Detalle - <?= htmlspecialchars($producto['nombre']) ?></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="../scr/css/detalle_producto.css" />
 </head>
 <body>
@@ -58,7 +59,7 @@ $stmt->close();
   <h3>Descripción</h3>
   <p><?= nl2br(htmlspecialchars($producto['descripcion'])) ?></p>
 
-  <div style="margin-top: 10px;">
+  <div>
     <label for="cantidad"><strong>Cantidad a comprar:</strong></label>
     <input type="number" id="cantidad" min="1" max="<?= intval($producto['stock']) ?>" value="1" />
   </div>
@@ -70,81 +71,68 @@ $stmt->close();
 </main>
 
 <script src="https://www.paypal.com/sdk/js?client-id=Ad8eprBV7VKf8Z3Fvb5SaW7dYymWDNJDE5zdhVgJ_hr1B8UTP5NAZrJKFXSt8uTzYgtdJEKG8cshD7jL"></script>
-
 <script>
 const cantidadInput = document.getElementById("cantidad");
 const totalSpan = document.getElementById("total");
 const precioUnitario = <?= floatval($producto['precio']) ?>;
 const stock = <?= intval($producto['stock']) ?>;
+const idProducto = <?= $id_producto ?>;
 
 function actualizarTotal() {
-  let cantidad = parseInt(cantidadInput.value);
-  if (isNaN(cantidad) || cantidad < 1) cantidad = 1;
-  if (cantidad > stock) cantidad = stock;
-  cantidadInput.value = cantidad;
+  const cantidad = parseInt(cantidadInput.value) || 0;
   const total = cantidad * precioUnitario;
   totalSpan.innerText = total.toFixed(2);
-  return total.toFixed(2);
 }
+cantidadInput.addEventListener("input", actualizarTotal);
+actualizarTotal();
 
-function renderPaypalButton() {
-  const total = actualizarTotal();
-
-  paypal.Buttons({
-    createOrder: function(data, actions) {
-      return actions.order.create({
-        purchase_units: [{
-          amount: { value: total }
-        }]
-      });
-    },
-    onApprove: function(data, actions) {
-      return actions.order.capture().then(function(details) {
-        // Aquí hacemos la petición para generar y descargar el PDF sin cambiar de página
-        const cantidad = parseInt(cantidadInput.value);
-        const idProducto = <?= $id_producto ?>;
-
-        fetch('generar_ticket2.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: idProducto, cantidad: cantidad })
-        })
-        .then(response => {
-          if (!response.ok) throw new Error('Error al generar ticket');
-          return response.blob();
-        })
-        .then(blob => {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'ticket_compra.pdf';
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          window.URL.revokeObjectURL(url);
-          alert('Pago y descarga completados, gracias por tu compra!');
-        })
-        .catch(err => alert(err.message));
-      });
-    },
-    onCancel: function() {
-      alert("Pago cancelado.");
-    },
-    onError: function(err) {
-      console.error(err);
-      alert("Error en el pago.");
+paypal.Buttons({
+  createOrder: function(data, actions) {
+    const cantidad = parseInt(cantidadInput.value);
+    if (cantidad <= 0 || cantidad > stock) {
+      alert("Cantidad inválida. Debe ser mayor a 0 y no exceder el stock.");
+      return;
     }
-  }).render('#paypal-button-container');
-}
+    const total = (cantidad * precioUnitario).toFixed(2);
+    return actions.order.create({
+      purchase_units: [{
+        amount: { value: total }
+      }]
+    });
+  },
+  onApprove: function(data, actions) {
+    return actions.order.capture().then(function(details) {
+      const cantidad = parseInt(cantidadInput.value);
 
-cantidadInput.addEventListener("change", () => {
-  actualizarTotal();
-  document.getElementById("paypal-button-container").innerHTML = '';
-  renderPaypalButton();
-});
-
-window.onload = function() {
-  renderPaypalButton();
-};
+      fetch('generar_ticket2.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: idProducto, cantidad: cantidad })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Error al generar ticket");
+        return response.blob();
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "ticket_compra.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(err => {
+        alert(err.message);
+      });
+    });
+  },
+  onCancel: function(data) {
+    alert("Pago cancelado.");
+  }
+}).render('#paypal-button-container');
 </script>
-  
+
+</body>
+</html>
