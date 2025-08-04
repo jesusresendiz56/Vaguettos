@@ -26,7 +26,7 @@ $result = $conn2->query($query);
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>Administrador de Pagos (Basado en Carritos)</title>
+    <title>Administrador de Pagos</title>
     <link rel="stylesheet" href="../scr/css/pagos.css" />
 </head>
 <body>
@@ -44,7 +44,7 @@ $result = $conn2->query($query);
         <a href="../vista/login.php" class="nav-link">Cerrar Sesión</a>
     </nav>
     <div>
-        <h1 class="titulo-principal">Administración de Pagos (Basado en Carritos)</h1>
+        <h1 class="titulo-principal">Administración de Pagos </h1>
     </div>
 </header>
 
@@ -80,7 +80,7 @@ $result = $conn2->query($query);
                   </a>
             </td>
             <td>
-                <a href="../controlador/generar_factura.php?id_carrito=<?= $row['id_carrito'] ?>" target="_blank">🧾</a>
+                <a href="../controlador/generar_factura.php?id_carrito=<?= $row['id_carrito'] ?>" target="_blank"><img src='../scr/imagenes/imprimir.png' alt='Factura' width='20' height='20'></a></td>
             </td>
         </tr>
     <?php endwhile; ?>

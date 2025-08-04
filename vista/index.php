@@ -79,6 +79,7 @@ if (!$resultado_productos) {
     <a href="catalogo.php">Catálogo de Productos</a>
     <?php if ($usuario): ?>
       <a href="carrito.php">Carrito de Compras</a>
+      <a href="editar_perfil.php">Editar Perfil</a>
       <a href="../controlador/logout.php">Cerrar sesión</a>
     <?php endif; ?>
   </nav>

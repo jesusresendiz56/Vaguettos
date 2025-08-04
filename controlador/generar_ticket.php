@@ -14,17 +14,17 @@ class PDF_Ticket extends FPDF {
     protected $logoPath = '../scr/imagenes/logo.jpg';
 
     function Header() {
-        // Encabezado más compacto
+        // Encabezado 
         $this->SetFont('Arial', 'B', 12);
         $this->Cell(0, 5, 'VAGUETTOS', 0, 1, 'C');
         $this->SetFont('Arial', '', 9);
         $this->Cell(0, 5, utf8_decode('Accesorios Volkswagen'), 0, 1, 'C');
-        $this->Cell(0, 5, 'www.vaguettos.com', 0, 1, 'C');
+        $this->Cell(0, 5, 'Vaguettos.com', 0, 1, 'C');
         $this->Ln(2);
         $this->Line(5, $this->GetY(), 75, $this->GetY());
         $this->Ln(3);
         
-        // Logo como marca de agua (posición ajustada)
+        // Logo 
         if (file_exists($this->logoPath)) {
             $this->Image($this->logoPath, 20, $this->GetY() + 20, 40);
         }
@@ -38,7 +38,7 @@ class PDF_Ticket extends FPDF {
     }
 }
 
-// Calcular altura dinámica
+// Calcular altura 
 $alto_base = 80;
 $alto_lineas = count($data['cart']) * 8;
 $alto_total = $alto_base + $alto_lineas;
@@ -51,8 +51,15 @@ $pdf->SetFont('Arial', '', 8);
 
 // Datos del cliente (compactos)
 $pdf->Cell(0, 4, 'Cliente: ' . utf8_decode(substr($data['name'], 0, 30)), 0, 1);
-$pdf->Cell(0, 4, 'Tel: ' . substr($data['phone'], 0, 15), 0, 1);
-$pdf->Cell(0, 4, 'Dir: ' . utf8_decode(substr($data['address'], 0, 30)), 0, 1);
+$pdf->Cell(0, 4, 'Telefono: ' . substr($data['phone'], 0, 15), 0, 1);
+$pdf->Cell(0, 4, 'Direccion: ' . utf8_decode(substr($data['address'], 0, 30)), 0, 1);
+
+// ➕ Fecha y hora actual (zona horaria México)
+date_default_timezone_set('America/Mexico_City');
+$fechaHora = date('d/m/Y H:i:s');
+$pdf->Cell(0, 4, 'Fecha: ' . $fechaHora, 0, 1); // Nueva línea agregada
+
+
 $pdf->Ln(2);
 $pdf->Line(5, $pdf->GetY(), 75, $pdf->GetY());
 $pdf->Ln(3);

@@ -1,17 +1,12 @@
 <?php
-// --- conexión local ---
-//include '../modelo/conexion.php';   // conexión local ($conn)
-
-// --- conexión remota (Railway) ---
-include '../modelo/conexion2.php';  // conexión remota ($conn2)
-
-// --- Cambia esto para elegir la base de datos que deseas usar ---
+include '../modelo/conexion2.php';
 $usarConexionRemota = true;
-
-
 $conn = $usarConexionRemota ? $conn2 : $conn;
 
-// Consulta para obtener todos los productos con sus categorías
+// Obtener categorías para el combobox
+$categorias = $conn->query("SELECT * FROM categorias ORDER BY nombre ASC");
+
+// Consulta de productos con categorías
 $sql = "SELECT p.*, c.nombre AS categoria_nombre 
         FROM productos p 
         LEFT JOIN categorias c ON p.id_categoria = c.id_categoria 
@@ -29,6 +24,12 @@ if (!$res) {
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Listado de Productos - Vaguettos</title>
 <link rel="stylesheet" href="../scr/css/stock.css" />
+<style>
+    .filtro-categoria {
+        margin: 20px 5%;
+        font-size: 1rem;
+    }
+</style>
 </head>
 <body>
 
@@ -46,6 +47,17 @@ if (!$res) {
     <h1>Listado de Productos</h1>
 </header>
 
+<!-- Combo de filtro por categoría -->
+<div class="filtro-categoria">
+    <label for="categoriaFiltro"><strong>Filtrar por categoría:</strong></label>
+    <select id="categoriaFiltro" onchange="filtrarPorCategoria()">
+        <option value="todos">-- Todas las categorías --</option>
+        <?php while ($cat = $categorias->fetch_assoc()): ?>
+            <option value="<?= htmlspecialchars($cat['nombre']) ?>"><?= htmlspecialchars($cat['nombre']) ?></option>
+        <?php endwhile; ?>
+    </select>
+</div>
+
 <section>
     <table>
         <thead>
@@ -60,11 +72,11 @@ if (!$res) {
                 <th>Eliminar</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tablaProductos">
             <?php if ($res->num_rows > 0): ?>
                 <?php while ($row = $res->fetch_assoc()): ?>
                     <?php $estado = ($row['stock'] > 0) ? "En Stock" : "Agotado"; ?>
-                    <tr>
+                    <tr data-categoria="<?= htmlspecialchars($row['categoria_nombre'] ?? 'Sin categoría') ?>">
                         <td>
                             <?php if (!empty($row['imagen_url'])): ?>
                                 <img src="../scr/imagenes/productos/<?= htmlspecialchars($row['imagen_url']) ?>" alt="Imagen de <?= htmlspecialchars($row['nombre']) ?>" class="product-img" />
@@ -95,6 +107,23 @@ if (!$res) {
 </section>
 
 <button onclick="location.href='cerrarSesion.html'">Salir</button>
+
+<!-- Script para filtrar por categoría -->
+<script>
+function filtrarPorCategoria() {
+    const categoriaSeleccionada = document.getElementById('categoriaFiltro').value;
+    const filas = document.querySelectorAll('#tablaProductos tr');
+
+    filas.forEach(fila => {
+        const categoria = fila.getAttribute('data-categoria');
+        if (categoriaSeleccionada === 'todos' || categoria === categoriaSeleccionada) {
+            fila.style.display = '';
+        } else {
+            fila.style.display = 'none';
+        }
+    });
+}
+</script>
 
 </body>
 </html>
