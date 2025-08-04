@@ -6,7 +6,7 @@ require_once '../modelo/conexion2.php';
 $where = "";
 if (isset($_POST['search']) && !empty($_POST['valueToSearch'])) {
     $valueToSearch = $conn2->real_escape_string($_POST['valueToSearch']);
-    $where = "AND (u.nombre_completo LIKE '%$valueToSearch%' OR c.fecha_creacion LIKE '%$valueToSearch%')";
+    $where = "AND (u.usuario LIKE '%$valueToSearch%' OR c.fecha_creacion LIKE '%$valueToSearch%')";
 }
 
 // Consulta carritos con totales calculados
