@@ -100,7 +100,7 @@ $productos = $conn->query($query);
           <h2 class="producto-nombre"><?= htmlspecialchars($p['nombre']) ?></h2>
           <p class="producto-precio">$<?= number_format($p['precio'], 2) ?></p>
           <a href="detalle_producto.php?id=<?= intval($p['id_producto']) ?>" class="btn-ver-mas">Ver más</a>
-          <a href="carrito.php?agregar=<?= intval($p['id_producto']) ?>" class="btn-ver-mas">Agregar al carrito</a>
+        
         </article>
       <?php endwhile; ?>
     <?php else: ?>

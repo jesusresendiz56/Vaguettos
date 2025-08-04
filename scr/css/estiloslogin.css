@@ -81,3 +81,59 @@ a {
   max-width: 60%;
   height: auto;
 }
+@media (max-width: 768px) {
+  body.container {
+    flex-direction: column;
+  }
+
+  .form-section,
+  .logo-section {
+    width: 100%;
+    padding: 30px 20px;
+    flex: none;
+    border-radius: 0 !important;
+  }
+
+  .form-section h2 {
+    text-align: center;
+    font-size: 16px;
+  }
+
+  input,
+  button {
+    width: 100%;
+  }
+
+  .logo {
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-section {
+    padding: 20px 15px;
+  }
+
+  .form-section h2 {
+    font-size: 15px;
+  }
+
+  label,
+  p {
+    font-size: 13px;
+  }
+
+  input {
+    font-size: 14px;
+    padding: 7px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 9px;
+  }
+
+  .logo {
+    max-width: 90%;
+  }
+}
