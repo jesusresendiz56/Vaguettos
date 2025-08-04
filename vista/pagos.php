@@ -31,6 +31,9 @@ if (!$result) {
     die("Error en la consulta: " . $conn2->error);
 }
 ?>
+<!-- aquí continúa el HTML igual -->
+ 
+?>
 
 <!DOCTYPE html>
 <html lang="es">
