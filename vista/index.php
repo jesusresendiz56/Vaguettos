@@ -121,7 +121,6 @@ if (!$resultado_productos) {
     <ul>
       <li>Compra en Línea rápida y segura</li>
       <li>Servicio técnico especializado a distancia</li>
-      <li>Envío a domicilio</li>
       <li>Garantía de satisfacción en cada pedido</li>
     </ul>
   </div>
@@ -157,8 +156,8 @@ if (!$resultado_productos) {
   </div>
 
   <p style="margin-top: 2rem;">
-    <a href="https://www.instagram.com/volkswagenmexico" target="_blank" style="padding: 0.6rem 1.2rem; background-color: #E1306C; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 1rem; display: inline-block;">
-      Visita nuestro Instagram Oficial
+    <a href="https://www.instagram.com/volkswagenmexico" target="_blank" style="padding: 0.6rem 1.2rem; background-color: #071739; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 1rem; display: inline-block;">
+      Visita el instagram oficial de Volkswagen México
     </a>
   </p>
 
@@ -199,5 +198,21 @@ if (!$resultado_productos) {
     }
   }, 1000);
 </script>
+<a href="https://wa.link/dwb8zd" target="_blank" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
+  <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp" width="60" height="60" />
+</a>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/689196c5ccc970192188d8bf/1j1sb9srl';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
 </body>
 </html>

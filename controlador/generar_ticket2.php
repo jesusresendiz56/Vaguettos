@@ -1,18 +1,13 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+require '../fpdf186/fpdf.php';
+require '../modelo/conexion2.php';
 
-require_once '../modelo/conexion2.php';
-require_once '../vendor/autoload.php'; // TCPDF
-use TCPDF;
-
-session_start();
-
+date_default_timezone_set('America/Mexico_City');
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (!$data || !isset($data['id'], $data['cantidad'])) {
     http_response_code(400);
-    echo "Parámetros inválidos.";
+    echo 'Parámetros inválidos';
     exit;
 }
 
@@ -21,10 +16,11 @@ $cantidad = intval($data['cantidad']);
 
 if ($id <= 0 || $cantidad <= 0) {
     http_response_code(400);
-    echo "ID o cantidad inválida.";
+    echo 'ID o cantidad inválida';
     exit;
 }
 
+// Obtener producto
 $stmt = $conn2->prepare("SELECT nombre, precio, stock FROM productos WHERE id_producto = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
@@ -32,16 +28,17 @@ $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
     http_response_code(404);
-    echo "Producto no encontrado.";
+    echo 'Producto no encontrado';
     exit;
 }
 
 $producto = $result->fetch_assoc();
 $stmt->close();
 
+// Validar stock
 if ($producto['stock'] < $cantidad) {
     http_response_code(400);
-    echo "Stock insuficiente.";
+    echo 'Stock insuficiente';
     exit;
 }
 
@@ -51,29 +48,90 @@ $stmt->bind_param("ii", $cantidad, $id);
 $stmt->execute();
 $stmt->close();
 
-// Generar PDF
-$pdf = new TCPDF();
-$pdf->AddPage();
-$pdf->SetFont('helvetica', '', 12);
-
+// Datos para el ticket
 $total = $producto['precio'] * $cantidad;
-$cliente = $_SESSION['usuario'] ?? 'Cliente';
+$fechaHora = date('d/m/Y H:i:s');
+$cliente = $_SESSION['usuario'] ?? 'Cliente Vaguettos';
 
-$html = "
-  <h2>Ticket de Compra</h2>
-  <p><strong>Cliente:</strong> {$cliente}</p>
-  <p><strong>Producto:</strong> " . htmlspecialchars($producto['nombre']) . "</p>
-  <p><strong>Cantidad:</strong> {$cantidad}</p>
-  <p><strong>Precio unitario:</strong> $" . number_format($producto['precio'], 2) . "</p>
-  <p><strong>Total:</strong> $" . number_format($total, 2) . "</p>
-";
+// Clase personalizada para ticket
+class PDF_Ticket extends FPDF {
+    protected $logoPath = '../scr/imagenes/logo.jpg';
 
-$pdf->writeHTML($html);
-$pdfContent = $pdf->Output('', 'S');
+    function Header() {
+        $this->SetFont('Arial', 'B', 12);
+        $this->Cell(0, 5, 'VAGUETTOS', 0, 1, 'C');
+        $this->SetFont('Arial', '', 9);
+        $this->Cell(0, 5, utf8_decode('Accesorios Volkswagen'), 0, 1, 'C');
+        $this->Cell(0, 5, 'Vaguettos.com', 0, 1, 'C');
+        $this->Ln(2);
+        $this->Line(5, $this->GetY(), 75, $this->GetY());
+        $this->Ln(2);
 
+        // Mostrar imagen centrada, tamaño pequeño (20 mm de ancho)
+    if (file_exists($this->logoPath)) {
+        $this->Image($this->logoPath, ($this->GetPageWidth() - 20) / 2, $this->GetY(), 20); 
+        $this->Ln(15); // Ajusta el salto de línea si deseas más separación
+    }
+
+    $this->Line(5, $this->GetY(), 75, $this->GetY()); // Línea separadora
+    $this->Ln(2);
+}
+
+    function Footer() {
+        $this->SetY(-15);
+        $this->SetFont('Arial', 'I', 7);
+        $this->Cell(0, 4, utf8_decode('¡Gracias por tu compra!'), 0, 1, 'C');
+        $this->Cell(0, 4, 'VAGUETTOS - Neza', 0, 1, 'C');
+    }
+}
+
+// Altura del ticket
+$alto_base = 100;
+$alto_final = max($alto_base, 120);
+
+$pdf = new PDF_Ticket('P', 'mm', array(80, $alto_final));
+$pdf->SetMargins(5, 5, 5);
+$pdf->AddPage();
+$pdf->SetFont('Arial', '', 8);
+
+// Cliente y fecha
+$pdf->Cell(0, 4, 'Cliente: ' . utf8_decode(substr($cliente, 0, 30)), 0, 1);
+$pdf->Cell(0, 4, 'Fecha: ' . $fechaHora, 0, 1);
+$pdf->Ln(2);
+$pdf->Line(5, $pdf->GetY(), 75, $pdf->GetY());
+$pdf->Ln(3);
+
+// Detalle del producto
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(35, 5, 'PRODUCTO', 0);
+$pdf->Cell(10, 5, 'CANT', 0, 0, 'C');
+$pdf->Cell(15, 5, 'P.UNIT', 0, 0, 'R');
+$pdf->Cell(15, 5, 'TOTAL', 0, 1, 'R');
+$pdf->SetFont('Arial', '', 8);
+
+$nombre = utf8_decode($producto['nombre']);
+if(strlen($nombre) > 20) {
+    $nombre = substr($nombre, 0, 17) . '...';
+}
+
+$pdf->Cell(35, 5, $nombre, 0);
+$pdf->Cell(10, 5, $cantidad, 0, 0, 'C');
+$pdf->Cell(15, 5, '$' . number_format($producto['precio'], 2, '.', ','), 0, 0, 'R');
+$pdf->Cell(15, 5, '$' . number_format($total, 2, '.', ','), 0, 1, 'R');
+
+$pdf->Ln(3);
+$pdf->Line(5, $pdf->GetY(), 75, $pdf->GetY());
+$pdf->Ln(2);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell(50, 6, 'TOTAL:', 0, 0, 'R');
+$pdf->Cell(20, 6, '$' . number_format($total, 2, '.', ','), 0, 1, 'R');
+$pdf->Line(5, $pdf->GetY(), 75, $pdf->GetY());
+
+// Salida del PDF
 header('Content-Type: application/pdf');
-header('Content-Disposition: attachment; filename="ticket_compra.pdf"');
-header('Content-Length: ' . strlen($pdfContent));
+header('Content-Disposition: attachment; filename="ticket_vaguettos.pdf"');
+header('Cache-Control: private, max-age=0, must-revalidate');
+header('Pragma: public');
 
-echo $pdfContent;
+$pdf->Output('D');
 exit;

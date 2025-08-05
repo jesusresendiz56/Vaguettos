@@ -22,13 +22,17 @@ class PDF_Ticket extends FPDF {
         $this->Cell(0, 5, 'Vaguettos.com', 0, 1, 'C');
         $this->Ln(2);
         $this->Line(5, $this->GetY(), 75, $this->GetY());
-        $this->Ln(3);
+        $this->Ln(2);
         
-        // Logo 
-        if (file_exists($this->logoPath)) {
-            $this->Image($this->logoPath, 20, $this->GetY() + 20, 40);
-        }
+     // Mostrar imagen centrada, tamaño pequeño (20 mm de ancho)
+    if (file_exists($this->logoPath)) {
+        $this->Image($this->logoPath, ($this->GetPageWidth() - 20) / 2, $this->GetY(), 20); 
+        $this->Ln(15); // Ajusta el salto de línea si deseas más separación
     }
+
+    $this->Line(5, $this->GetY(), 75, $this->GetY()); // Línea separadora
+    $this->Ln(3);
+}
 
     function Footer() {
         $this->SetY(-15);

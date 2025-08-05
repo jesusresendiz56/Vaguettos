@@ -104,7 +104,7 @@ paypal.Buttons({
     return actions.order.capture().then(function(details) {
       const cantidad = parseInt(cantidadInput.value);
 
-      fetch('generar_ticket2.php', {
+      fetch('../controlador/generar_ticket2.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: idProducto, cantidad: cantidad })
