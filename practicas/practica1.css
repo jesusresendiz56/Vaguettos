@@ -1,0 +1,48 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+}
+
+.lista-nombres {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nombre {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px 0;
+  cursor: pointer;
+  display: flex;             
+  align-items: center;        
+  gap: 10px;                 
+  padding: 5px;
+  transition: background 0.3s;
+  color: black;
+  width: fit-content;        
+}
+
+.nombre:hover {
+  background: rgb(108, 91, 195);
+  color: white;
+  border-radius: 5px;
+}
+
+.nombre img {
+   width: 1024px;
+  height: 1024px;     
+  object-fit: cover;  
+  border: 2px solid #333;
+  border-radius: 8px;
+  display: none;   
+}
+
+.nombre:hover img {
+  display: block;
+}
