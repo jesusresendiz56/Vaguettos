@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hamburguesería</title>
+  <link rel="stylesheet" href="practica2.css">
+</head>
+<body>
+
+  <div class="top-bar">
+    <button class="logo-button">🍔</button>
+    <div class="dropdown" id="menu">
+      <button onclick="openModal('Administrador')">Administrador</button>
+      <button onclick="openModal('Cliente')">Cliente</button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2 id="modal-title"></h2>
+      <button class="close" onclick="closeModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- JS directo en el mismo archivo -->
+  <script>
+    const logoButton = document.querySelector('.logo-button');
+    const menu = document.getElementById('menu');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+
+    // Mostrar/ocultar menú
+    logoButton.addEventListener('click', () => {
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Abrir modal
+    function openModal(tipo) {
+      modalTitle.textContent = `Bienvenido ${tipo}`;
+      modal.style.display = 'flex';
+      menu.style.display = 'none';
+    }
+
+    // Cerrar modal
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    // Cerrar modal al hacer clic fuera
+    window.onclick = (event) => {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
+  </script>
+</body>
+</html>
