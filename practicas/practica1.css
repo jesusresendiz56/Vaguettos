@@ -1,12 +1,18 @@
 body {
+  background-color: black;
   font-family: Arial, sans-serif;
   padding: 20px;
 }
 
 h1 {
-  color: #333;
+  color: #ffffff;
   text-align: center;
 }
+h2
+{
+  color: #ffffff;
+  text-align: center;
+} 
 
 .lista-nombres {
   list-style: none;
@@ -24,14 +30,14 @@ h1 {
   gap: 10px;                 
   padding: 5px;
   transition: background 0.3s;
-  color: black;
+  color: white;
   width: fit-content;        
 }
 
 .nombre:hover {
-  background: rgb(108, 91, 195);
-  color: white;
-  border-radius: 5px;
+  background: grey;
+  color: rgb(255, 255, 255);
+  border-radius: 2px;
 }
 
 .nombre img {
